@@ -1,0 +1,292 @@
+/* RESETS */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+*:focus {
+  outline: 3px dashed #228bec;
+  outline-offset: 0;
+}
+html {
+  font: 62.5% / 1.15 sans-serif;
+}
+h1,
+h2 {
+  margin-bottom: 0;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  appearance: none;
+}
+button::-moz-focus-inner {
+  border: 0;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+button,
+input {
+  overflow: visible;
+}
+input[type="text"] {
+  border-radius: 0;
+}
+body {
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  font: 1.6rem/1.25 Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #4d4d4d;
+}
+@media screen and (min-width: 620px) {
+  body {
+    font-size: 1.9rem;
+    line-height: 1.31579;
+  }
+}
+/*END RESETS*/
+/* GLOBAL STYLES */
+
+/* .input-number {
+  width: 100px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+} */
+
+.workout-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the select element */
+.dropdown-menu {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 8px 20px;
+  font-size: 20px;
+  border-radius: 5px;
+  width: 200px;
+  cursor: pointer;
+}
+
+/* Style the dropdown arrow icon */
+.dropdown-menu::-ms-expand {
+  display: none;
+}
+
+/* Add a custom arrow icon */
+.dropdown-menu:after {
+  content: '\25BC';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Style the checkbox */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  margin-right: 8px;
+}
+
+/* Style the checkbox when checked */
+input[type="checkbox"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Hide the checkbox tick mark */
+input[type="checkbox"]::before {
+  content: '\2713';
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  line-height: 20px;
+}
+
+/* Style the labels */
+label {
+  font-size: 22px;
+  color: #333;
+}
+
+
+.single-set-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.single-set-form label {
+  font-weight: bold;
+  color: #333;
+}
+
+.single-set-form input[type="number"] {
+  width: 100px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.single-set-form span {
+  color: #333;
+}
+
+/* Style the dropdown arrow icon */
+.dropdown-menu::-ms-expand {
+  display: none;
+}
+
+/* Hover effect */
+select:hover {
+  border-color: #666;
+}
+
+/* .dropdown-menu {
+  width: 300px;
+} */
+
+ul > li {
+  padding: 25px;
+}
+
+/* chat GPT suggested style let's see */
+.list-of-exercises {
+  list-style: none;
+  padding: 0;
+}
+
+/* .single-exercise {
+  border: groove;
+  padding: 5px;
+  border-color: light;
+  background-color: #e6d7ff;
+} */
+
+.single-exercise {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.list-of-sets {
+  list-style: none;
+  padding: 0;
+} */
+
+/* .list-of-sets li {
+  margin-bottom: 5px;
+}
+
+/* Optional: Add a background color to the entire component */
+.workout-log-preview {
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+/* Optional: Apply some typography styles for readability */
+.single-exercise b {
+  font-size: 18px;
+  color: purple;
+}
+
+.list-of-sets li div {
+  font-size: 20px;
+  color: black;
+}
+
+/* Optional: Apply hover effect on the exercise item */
+.single-exercise:hover {
+  background-color: #eaeaea;
+}
+/* end of */
+/* 
+.single-exercise {
+  border: groove;
+  padding: 5px;
+  border-color: light;
+  background-color: #e6d7ff;
+} */
+
+.btn {
+  padding: 0.8rem 1rem 0.7rem;
+  border: 0.2rem solid #4d4d4d;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.btn.toggle-btn {
+  border-width: 1px;
+  border-color: #d3d3d3;
+}
+.btn.toggle-btn[aria-pressed="true"] {
+  text-decoration: underline;
+  border-color: #4d4d4d;
+}
+.btn__danger {
+  color: #fff;
+  background-color: #ca3c3c;
+  border-color: #bd2130;
+}
+.btn__filter {
+  border-color: lightgrey;
+}
+.btn__primary {
+  color: #fff;
+  background-color: #000;
+}
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+}
+.btn-group > * {
+  flex: 1 1 49%;
+}
+.btn-group > * + * {
+  margin-left: 0.8rem;
+}
