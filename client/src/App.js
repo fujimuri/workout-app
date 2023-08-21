@@ -3,6 +3,7 @@ import WorkoutLog from './components/WorkoutLog'
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import Header from './components/Header';
 
 function App(props) {
 
@@ -40,7 +41,6 @@ function App(props) {
                 'Content-Type': 'application/json'
             }
         }).then(
-          // response => console.log(response)
           response => response.json()
         ).then(
           data => navigate(`/workouts/${data}/view`)
@@ -50,9 +50,7 @@ function App(props) {
 
   return (
     <div>
-      <h1>
-        Workout Tracking App
-      </h1>
+      <Header/>
       < WorkoutLog
       isEditing={isEditing}
       isPrefilled={isPrefilled}

@@ -1,0 +1,29 @@
+.header {
+    color: rgb(201, 105, 121);
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    padding: 10px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.header-links {
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+}
+
+.header-links li {
+    margin-right: 30px; /* Adjust the spacing as needed */
+}
