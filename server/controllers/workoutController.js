@@ -24,12 +24,15 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     const dateRange = req.query.date_range;
     const containsPR = req.query.contains_pr === true;
 
-    let query = {}; // Initialize the query object for the MongoDB query
+    let query = {};
+    // Initialize the query object for the MongoDB query
 
     if (exerciseName && exerciseName !== 'All Exercises') {
         const singleExercisesFiltered = await SingleExercise.find({
         exerciseName: exerciseName,
         }).select('_id');
+        // find list of id's of SingleExercises that have the
+        // exerciseName I am filtering for.
 
         query = {
         ...query,
@@ -37,7 +40,7 @@ exports.workouts_get = asyncHandler(async(req, res) => {
         };
     }
 
-    // Filter based on date_range
+    // filter based on date_range
     if (dateRange && dateRange !== "all-time") {
         if (dateRange === 'past-30-days') {
           const startDate = new Date();
@@ -52,6 +55,14 @@ exports.workouts_get = asyncHandler(async(req, res) => {
           const endDate = new Date('2023-12-31');
           query.date = { $gte: startDate, $lte: endDate };
         }
+    }
+
+    // filter based on contains_pr
+    if (containsPR) {
+        // then only show workoutLogs where there exists a
+        // SingleExercise with max weight relative to the
+        // other SingleExercises with same name in the date
+        // range.
     }
 
     console.log("PRINTING MY QUERY HENLO" + JSON.stringify(query));
