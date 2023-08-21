@@ -13,7 +13,8 @@
     align-items: flex-start;
 }
 
-.header-links {
+.header-links,
+.header-link {
     padding: 0;
     display: flex;
     align-items: center;
@@ -24,6 +25,33 @@
     align-items: center;
 }
 
-.header-links li {
-    margin-right: 30px; /* Adjust the spacing as needed */
+.header-links li { 
+    margin-right: 30px;
+}
+
+.link {
+    color: rgb(66, 61, 66);
+}
+
+.link-active {
+    color: black;
+}
+
+.header-link-btn {
+    background-color: rgb(255, 223, 228);
+    border-radius: 12px;
+    border: none;
+    padding: 5px;
+}
+
+.header-link-btn-active {
+    background-color: lightgrey;
+    border-radius: 12px;
+    border: none;
+    padding: 5px;
+}
+
+.header-link-btn:hover {
+    background-color: lightgrey;
+    color: white;
 }

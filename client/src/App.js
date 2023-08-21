@@ -50,7 +50,7 @@ function App(props) {
 
   return (
     <div>
-      <Header/>
+      <Header pageName={props.pageName}/>
       < WorkoutLog
       isEditing={isEditing}
       isPrefilled={isPrefilled}

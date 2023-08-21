@@ -11,27 +11,32 @@ const RouteSwitch = () => {
                 path="/"
                 element={<App
                         isEditing={true}
-                        isPrefilled={false}/>}/>
+                        isPrefilled={false}
+                        pageName="New Workout"/>}/>
                 <Route
                 path="/new"
                 element={<App
                         isEditing={true}
-                        isPrefilled={false}/>}/>
+                        isPrefilled={false}
+                        pageName="New Workout"/>}/>
                 <Route
                 path="/workouts/:id/view"
                 element={<App
                         isEditing={false}
                         isPrefilled={true}
+                        pageName="other"
                         />}/>
                 <Route
                 path="/workouts/:id/edit"
                 element={<App
                         isEditing={true}
                         isPrefilled={true}
+                        pageName="other"
                         />}/>
                 <Route
                 path="/workouts"
                 element={<Archive
+                pageName="Previous Workouts"
                         />}/>
             </Routes>
         </BrowserRouter>

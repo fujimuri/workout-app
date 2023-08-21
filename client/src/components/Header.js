@@ -2,13 +2,18 @@ import React from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
 
-function Header() {
+function Header(props) {
     // component that displays the application name and links
     // to navigate.
-    // front page: page with default new workout.
-    // can navigate to: previous workouts, personal bests,
-    // hall of fame (display PRs across all users
+    // I want to highlight the page where we are currently. So
+    // we need to know which page we're on.
+    const pageName = props.pageName;
+
     const namesAndLinks = [
+        {
+            urlName: 'New Workout',
+            url: 'http://localhost:3000/' // might be /new later
+        },
         {
             urlName: 'Previous Workouts',
             url: 'http://localhost:3000/workouts'
@@ -21,7 +26,9 @@ function Header() {
             urlName: 'Hall of Fame',
             url: 'http://localhost:3000/workouts'
         },
+        
     ]
+
     return (
         <div className="header">
             <h1 className="header-title">
@@ -29,8 +36,15 @@ function Header() {
             </h1>
             <ul className="header-links">
                 {namesAndLinks.map((obj) => (
-                    <li className="header-links">
-                        <Link to={obj.url}>{obj.urlName}</Link>
+                    <li className="header-link">
+                        <button className={pageName === obj.urlName? 'header-link-btn-active' : 'header-link-btn'}>
+                            <Link
+                                to={obj.url}
+                                className={pageName === obj.urlName? 'link-active' : 'link'}
+                                >
+                                    {obj.urlName}
+                            </Link>
+                        </button>
                     </li>
                 ))}
             </ul>

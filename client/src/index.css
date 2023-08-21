@@ -19,7 +19,7 @@ ul {
   list-style: none;
   padding: 0;
 }
-button {
+/* button {
   border: none;
   margin: 0;
   padding: 0;
@@ -32,10 +32,10 @@ button {
   -webkit-font-smoothing: inherit;
   -moz-osx-font-smoothing: inherit;
   appearance: none;
-}
-button::-moz-focus-inner {
+} */
+/* button::-moz-focus-inner {
   border: 0;
-}
+} */
 button,
 input,
 optgroup,
