@@ -100,6 +100,7 @@ function WorkoutLog(props) {
     }
 
     const editingTemplate = (
+        <div className="workout-log workout-log-edit">
         <form onSubmit={handleSubmit}>
             <h3> Add an exercise, weight and sets x reps: </h3>
             <ul className="list-of-exercises">
@@ -127,10 +128,12 @@ function WorkoutLog(props) {
                 Save Workout
             </button>
         </form>
+        </div>
     )
+    
 
     const viewTemplate = (
-        <div>
+        <div className="workout-log workout-log-view">
             <ul className="list-of-exercises">
                 {currentExerciseList?.map((exercise) => (
                     <li className="single-exercise" key={exercise.id}>

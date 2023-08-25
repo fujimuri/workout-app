@@ -66,41 +66,47 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     }
 
     console.log("PRINTING MY QUERY HENLO" + JSON.stringify(query));
-    const workoutLogs = await WorkoutLog.find(query).sort({ date: -1 }).exec();
+    const workoutLogs = await WorkoutLog.find(query)
+    .populate('exerciseList')
+    .sort({ date: -1 })
+    .exec();
     
-    // send workouts id, data, and setLog to my frontend :)
-    const allWorkoutsIDsAndDatesToSend =
+    // send workouts id, data, and exerciseList to my frontend :)
+    const workoutsToSend =
     workoutLogs.map(
         (workout) => (
             {
                 id: workout._id,
-                date: workout.date_formatted
+                date: workout.date_formatted,
+                exerciseList: workout.exerciseList
             }
         )
     )
-    console.log(JSON.stringify(allWorkoutsIDsAndDatesToSend));
-    res.json(allWorkoutsIDsAndDatesToSend);
+    console.log(JSON.stringify(workoutsToSend));
+    res.json(workoutsToSend);
 });
 
 exports.workout_archive_get = asyncHandler(async(req, res) => {
-    // get all workouts and send their {id, date}
+    // get all workouts and send their data
     // in an array. :)
     const allWorkouts = await WorkoutLog.find({})
     .sort({ date: -1 })
+    .populate("exerciseList")
     .exec();
+    console.log("PRINTING ALL WORKOUTS DATA")
     console.log(JSON.stringify(allWorkouts))
     // get id's as strings and format date nicely
-    const allWorkoutsIDsAndDatesToSend =
-    allWorkouts.map(
-        (workout) => (
-            {
-                id: workout._id,
-                date: workout.date_formatted
-            }
-        )
-    )
-    console.log(JSON.stringify(allWorkoutsIDsAndDatesToSend));
-    res.json(allWorkoutsIDsAndDatesToSend);
+    // const allWorkoutsIDsAndDatesToSend =
+    // allWorkouts.map(
+    //     (workout) => (
+    //         {
+    //             id: workout._id,
+    //             date: workout.date_formatted
+    //         }
+    //     )
+    // )
+    // console.log(JSON.stringify(allWorkoutsIDsAndDatesToSend));
+    res.json(allWorkouts);
 })
 
 // display workout data with given id

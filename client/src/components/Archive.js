@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import WorkoutLogPreview from './WorkoutLogPreview';
+import WorkoutLog from './WorkoutLog';
 
-function Archive() {
+function Archive(props) {
     
     const [exerciseName, setExerciseName] = useState('');
     const [dateRange, setDateRange] = useState('');
@@ -22,16 +23,15 @@ function Archive() {
         )
     }, [exerciseName, dateRange, showWorkoutsWithPRs]);
 
-    // ?date_range=${dateRange}?contains_pr=${checkedPR}
-
-
     // a second useEffect to update my workoutList correctly
     useEffect(() => {
         const workoutLogList = backendData.map((workoutData) => ({
           workoutID: workoutData.id,
           workoutDate: workoutData.date,
+          workoutExerciseList: workoutData.exerciseList,
           hasBeenClicked: false,
         }));
+
         setWorkoutList(workoutLogList);
         // Update the workoutList state
       }, [backendData]);
@@ -59,25 +59,8 @@ function Archive() {
         setDateRange(e.target.value);
     }
 
-    // function checkPR(e) {
-    //     e.preventDefault();
-    //     setCheckedPR(!checkedPR);
-    // }
-
-    // <Link
-    //                 onClick={() => onClickTry(workout.workoutID)}
-    //                 >
-    //                     {workout.workoutDate}
-    //                 </Link>
-
-    // to={{pathname: `/workouts/${workout.workoutID}/view`}}
-
-
     return (
         <div>
-            <h1>
-            Previous Workouts
-            </h1>
             <div className="workout-filters">
                 <div className="filter-group">
                     <label htmlFor="exercises">Display workouts containing:</label>
@@ -124,7 +107,12 @@ function Archive() {
                             {workout.workoutDate}
                         </button>
                         { workout.hasBeenClicked &&
-                        <WorkoutLogPreview id={workout.workoutID}/>
+                        <WorkoutLog
+                        id={workout.workoutID}
+                        isEditing={false}
+                        isPrefilled={true}
+                        data={workout.workoutExerciseList}
+                        handleWorkoutSubmit={props.handleWorkoutSubmit}/>
                         }
                     </div>
                 </li>

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Header from './components/Header';
+import Archive from './components/Archive';
 
 function App(props) {
 
@@ -19,7 +20,9 @@ function App(props) {
 
   const [backendData, setBackendData] = useState([{}]);
 
-  // fetch data from backend
+  // fetch data for a specific workout: I use this for
+  // workouts/:id/view or edit page, however soon I'm going
+  // to replace that with my archive page anyway. <3
   useEffect(() => {
     if (isPrefilled) {
       console.log("fetching data for workout log!");
@@ -51,11 +54,20 @@ function App(props) {
   return (
     <div>
       <Header pageName={props.pageName}/>
-      < WorkoutLog
-      isEditing={isEditing}
-      isPrefilled={isPrefilled}
-      data={backendData}
-      handleWorkoutSubmit={handleWorkoutSubmit}/>
+      {
+        props.pageName === "Previous Workouts" ? (
+          <Archive
+          isEditing={false}
+          isPrefilled={true}
+          handleWorkoutSubmit={handleWorkoutSubmit}/>
+        ) : (
+          <WorkoutLog
+          isEditing={isEditing}
+          isPrefilled={isPrefilled}
+          data={backendData}
+          handleWorkoutSubmit={handleWorkoutSubmit}/>
+        )
+      }
     </div>
   );
 }

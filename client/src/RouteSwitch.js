@@ -35,7 +35,7 @@ const RouteSwitch = () => {
                         />}/>
                 <Route
                 path="/workouts"
-                element={<Archive
+                element={<App
                 pageName="Previous Workouts"
                         />}/>
             </Routes>

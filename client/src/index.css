@@ -4,10 +4,10 @@
 *::after {
   box-sizing: border-box;
 }
-*:focus {
+/* *:focus {
   outline: 3px dashed #228bec;
   outline-offset: 0;
-}
+} */
 html {
   font: 62.5% / 1.15 sans-serif;
 }
@@ -224,7 +224,6 @@ ul > li {
   margin-bottom: 5px;
 }
 
-/* Optional: Add a background color to the entire component */
 .workout-log-preview {
   background-color: #f2f2f2;
   padding: 20px;
@@ -289,4 +288,11 @@ ul > li {
 }
 .btn-group > * + * {
   margin-left: 0.8rem;
+}
+
+/* Workout Log Design */
+.workout-log {
+  background-color: rgb(250, 232, 235);
+  border-radius: 25px;
+  padding: 10px;
 }
