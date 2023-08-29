@@ -34,6 +34,8 @@ function App(props) {
     }
   }, [isEditing, setBackendData]);
 
+  // handle workout submit... but this can be new or update
+  // existing, in which case I need the workout id!
   const handleWorkoutSubmit = async (isNew, workoutLog) => {
     if (isNew) {
       console.log("saving my new workout");
@@ -45,11 +47,33 @@ function App(props) {
             }
         }).then(
           response => response.json()
-        ).then(
-          data => navigate(`/workouts/${data}/view`)
         )
+        // save below for redirect after saving a New
+        // Workout: to previous workouts,
+        // whereas after editing an existing workout we don't
+        // redirect because Archive will refresh itself anyway.
+        // ).then(
+        //   data => navigate(`/workouts/${data}/view`)
+        // )
     }
   };
+
+  const handleWorkoutUpdate = async (workoutID, workoutLog) => {
+    await fetch(`http://localhost:5000/workouts/${workoutID}/update`, {
+      method: 'POST',
+      body: JSON.stringify(workoutLog),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(
+      response => {
+      if (response.ok) {
+        return true
+      } else {
+        throw new Error('Request failed'); // Handle the error case
+      }
+    })
+  }
 
   return (
     <div>
@@ -59,7 +83,8 @@ function App(props) {
           <Archive
           isEditing={false}
           isPrefilled={true}
-          handleWorkoutSubmit={handleWorkoutSubmit}/>
+          handleWorkoutSubmit={handleWorkoutSubmit}
+          handleWorkoutUpdate={handleWorkoutUpdate}/>
         ) : (
           <WorkoutLog
           isEditing={isEditing}

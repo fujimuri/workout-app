@@ -45,6 +45,9 @@ app.get('/workouts/:id', workout_controller.workout_view_get)
 // POST a new workout
 app.post('/new', workout_controller.workout_create_post);
 
+// update an existing workout in database
+app.post('/workouts/:id/update', workout_controller.workout_update_post);
+
 app.get('/workouts', workout_controller.workouts_get);
 
 app.listen(5000, () =>

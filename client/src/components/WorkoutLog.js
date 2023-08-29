@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 function WorkoutLog(props) {
     // create an empty exercise with a single empty set.
     const emptyExercise = {
+        isNew: true, // tells the DB whether to generate a new
+        // object for this singleExercise or not :3
         id: null,
         exerciseName: 'Squat',
         setLog: [
@@ -31,12 +33,12 @@ function WorkoutLog(props) {
     useState(initialExerciseList);
     // above is relevant to edit mode, not view mode. :)
 
+    // when does WorkoutLog update itself?
     useEffect(() => {
         if (props.isPrefilled) {
             setExerciseList(props.data);
         }
-    });
-    // }, []);
+    }, [props.data, props.isPrefilled]);
 
     // exercise with id sends change its name and setlog once
     // one of them has been changed, we update them.
@@ -65,13 +67,22 @@ function WorkoutLog(props) {
         setExerciseList(newExerciseList);
     }
 
+    const handleEdit = async (e) => {
+        e.preventDefault();
+        // tell Archive that this workoutLog is being edited,
+        // which will reload this component
+        props.handleWorkoutEdit(props.id);
+    }
+
     // handle submit of workout: for now, this is for a NEW
     // workout. we have to post the data to the DB.
     // we'll do that in App.js
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // I don't want to send my react id's to my server.
-        // let's delete them.
+        // if the SingleExercise exists, I want to send its
+        // id back to the server. If it doesn't and
+        // was added, I have to generate a new ExerciseLog
+        // for it on my backend.
         const exerciseListToSend = currentExerciseList.map(
             (exercise) => {
                 // go over setList and copy without id
@@ -84,7 +95,11 @@ function WorkoutLog(props) {
                         }
                     }
                 )
+                alert("exercise.isNew is" + exercise.isNew);
                 return {
+                    isNew: exercise.isNew,
+                    id: exercise.id, // if exercise not new, then
+                    // this id is from DB. else, we ignore it.
                     exerciseName: exercise.exerciseName,
                     setLog: setLog,
                 }
@@ -95,8 +110,13 @@ function WorkoutLog(props) {
             user_id: 0,
             exerciseList: exerciseListToSend,
         }
-        await props.handleWorkoutSubmit(true, workoutLogToSend);
-
+        // workout submit or workout update?
+        // changing to workout update for now!
+        await props.handleWorkoutUpdate(props.id, workoutLogToSend);
+        // TODO: PUT BACK function below!
+        // await props.handleWorkoutSubmit(true, workoutLogToSend);
+        // tell Archive this WorkoutLog was submitted
+        props.finishWorkoutEditing(props.id, workoutLogToSend);
     }
 
     const editingTemplate = (
@@ -146,6 +166,7 @@ function WorkoutLog(props) {
                     </li>
                 ))}
                 <button
+                onClick={handleEdit}
                 className="btn">
                     Edit Workout
                 </button>

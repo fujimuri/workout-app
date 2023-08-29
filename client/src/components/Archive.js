@@ -14,7 +14,8 @@ function Archive(props) {
 
     const [workoutList, setWorkoutList] = useState([]);
 
-    // fetch data from backend /archive
+    // fetch data from backend/archive
+    // should fetch again after saving an edited workout as well
     useEffect(() => {
         fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`).then(
         response => response.json()
@@ -30,11 +31,40 @@ function Archive(props) {
           workoutDate: workoutData.date,
           workoutExerciseList: workoutData.exerciseList,
           hasBeenClicked: false,
+          isEditing: false,
         }));
 
         setWorkoutList(workoutLogList);
         // Update the workoutList state
       }, [backendData]);
+
+    // change workoutLog to editing when user edits it
+    function handleWorkoutEdit(id) {
+        const changedWorkoutList = workoutList?.map((workout) => {
+            if (workout.workoutID === id) {
+                return {...workout,
+                    isEditing: true}
+            }
+            return workout;
+        })
+        setWorkoutList(changedWorkoutList);
+    }
+
+    function finishWorkoutEditing(id, workoutLogToSend) {
+        // change this workout's is Editing back to false
+        // and set its new data (though he could do it itself...)
+        const changedWorkoutList = workoutList?.map((workout) => {
+            if (workout.workoutID === id) {
+                return {...workout,
+                    isEditing: false,
+                    data: workoutLogToSend}
+            }
+            return workout;
+        })
+        setWorkoutList(changedWorkoutList);
+    }
+    // the question is, will this reload the workout with the new
+    // data?
 
 
     function onClickDisplayOrHideWorkout(id) {
@@ -109,10 +139,13 @@ function Archive(props) {
                         { workout.hasBeenClicked &&
                         <WorkoutLog
                         id={workout.workoutID}
-                        isEditing={false}
+                        isEditing={workout.isEditing}
                         isPrefilled={true}
                         data={workout.workoutExerciseList}
-                        handleWorkoutSubmit={props.handleWorkoutSubmit}/>
+                        handleWorkoutSubmit={props.handleWorkoutSubmit}
+                        handleWorkoutEdit={handleWorkoutEdit}
+                        finishWorkoutEditing={finishWorkoutEditing}
+                        handleWorkoutUpdate={props.handleWorkoutUpdate}/>
                         }
                     </div>
                 </li>

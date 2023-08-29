@@ -18,29 +18,30 @@ async function findWorkoutsContainingExercise (exerciseName) {
     return filteredWorkoutLogs;
 }
 
+// handle GET on list of workouts
 exports.workouts_get = asyncHandler(async(req, res) => {
-    // Get filter parameters from the query string
+    // filter params
     const exerciseName = req.query.exercise_name;
     const dateRange = req.query.date_range;
     const containsPR = req.query.contains_pr === true;
 
+    // mongoDB query
     let query = {};
-    // Initialize the query object for the MongoDB query
 
+    // apply name filter
     if (exerciseName && exerciseName !== 'All Exercises') {
         const singleExercisesFiltered = await SingleExercise.find({
         exerciseName: exerciseName,
         }).select('_id');
         // find list of id's of SingleExercises that have the
         // exerciseName I am filtering for.
-
         query = {
         ...query,
         exerciseList: { $in: singleExercisesFiltered.map((exercise) => exercise._id) },
         };
     }
 
-    // filter based on date_range
+    // apply date filter
     if (dateRange && dateRange !== "all-time") {
         if (dateRange === 'past-30-days') {
           const startDate = new Date();
@@ -57,7 +58,7 @@ exports.workouts_get = asyncHandler(async(req, res) => {
         }
     }
 
-    // filter based on contains_pr
+    // filter based on contains_pr - TODO
     if (containsPR) {
         // then only show workoutLogs where there exists a
         // SingleExercise with max weight relative to the
@@ -65,26 +66,93 @@ exports.workouts_get = asyncHandler(async(req, res) => {
         // range.
     }
 
-    console.log("PRINTING MY QUERY HENLO" + JSON.stringify(query));
     const workoutLogs = await WorkoutLog.find(query)
     .populate('exerciseList')
     .sort({ date: -1 })
     .exec();
     
-    // send workouts id, data, and exerciseList to my frontend :)
-    const workoutsToSend =
-    workoutLogs.map(
-        (workout) => (
-            {
-                id: workout._id,
-                date: workout.date_formatted,
-                exerciseList: workout.exerciseList
-            }
-        )
-    )
-    console.log(JSON.stringify(workoutsToSend));
-    res.json(workoutsToSend);
+    // prepare workoutLogs to send to frontend
+    const modifiedWorkoutLogs = workoutLogs.map((workout) => {
+        const modifiedExerciseList = workout.exerciseList.map((singleExercise) => ({
+          isNew: false,
+          id: singleExercise._id,
+          exerciseName: singleExercise.exerciseName,
+          setLog: singleExercise.setLog,
+        }));
+      
+        return {
+          id: workout._id,
+          date: workout.date_formatted,
+          exerciseList: modifiedExerciseList,
+        };
+      });
+
+    res.json(modifiedWorkoutLogs);
 });
+
+// update workout with given id
+exports.workout_update_post = [
+    // validate and sanitize fields
+    // TODO
+
+    asyncHandler(async (req, res) => {
+        console.log("updating workout...")
+        console.log(JSON.stringify(req.body.exerciseList))
+
+        const exerciseList = req.body.exerciseList;
+        const workoutID = req.params.id;
+    
+        const updatedExerciseIDs = [];
+    
+        for (const exercise of exerciseList) {
+            if (exercise.isNew) {
+                // Create a new SingleExercise object with the exercise data
+                const newExercise = new SingleExercise({
+                    exerciseName: exercise.exerciseName,
+                    setLog: exercise.setLog,
+                });
+    
+                try {
+                    // Save the new exercise to the database
+                    const savedExercise = await newExercise.save();
+                    // Push the ID of the newly saved exercise to the list
+                    updatedExerciseIDs.push(savedExercise._id);
+                } catch (error) {
+                    // Handle the error if the exercise couldn't be saved
+                    console.error("Error saving new exercise:", error);
+                    res.status(500).send("Error saving new exercise");
+                    return;
+                }
+            } else {
+                // If exercise is not new, update the existing exercise
+                await SingleExercise.findByIdAndUpdate(
+                    exercise.id,
+                    {
+                        exerciseName: exercise.exerciseName,
+                        setLog: exercise.setLog,
+                    }
+                );
+                updatedExerciseIDs.push(exercise.id);
+            }
+        }
+
+        console.log("these are the updated exercise ID's")
+        console.log(JSON.stringify(updatedExerciseIDs))
+    
+        // Update the WorkoutLog with the updated exercise IDs
+        await WorkoutLog.findByIdAndUpdate(workoutID, {
+            exerciseList: updatedExerciseIDs,
+        });
+
+        // check saved
+        const updatedWorkout = await WorkoutLog.findById(workoutID);
+
+        console.log("saved WorkoutLog is "
+        + JSON.stringify(updatedWorkout))
+    
+        res.status(200).send("WorkoutLog Updated Successfully");
+    }),
+]  
 
 exports.workout_archive_get = asyncHandler(async(req, res) => {
     // get all workouts and send their data
@@ -93,8 +161,6 @@ exports.workout_archive_get = asyncHandler(async(req, res) => {
     .sort({ date: -1 })
     .populate("exerciseList")
     .exec();
-    console.log("PRINTING ALL WORKOUTS DATA")
-    console.log(JSON.stringify(allWorkouts))
     // get id's as strings and format date nicely
     // const allWorkoutsIDsAndDatesToSend =
     // allWorkouts.map(
@@ -111,15 +177,16 @@ exports.workout_archive_get = asyncHandler(async(req, res) => {
 
 // display workout data with given id
 exports.workout_view_get = asyncHandler(async(req, res) => {
-    console.log("this is params.id " + req.params.id);
-    const workoutExerciseList = await WorkoutLog.findById(req.params.id)
+    const workoutData = await WorkoutLog.findById(req.params.id)
     .populate("exerciseList")
-    .select({ exerciseList: 1, _id: 0 });
-    const exerciseListData = workoutExerciseList.exerciseList;
-    console.log("printing to view my exercise list");
-    console.log(JSON.stringify(workoutExerciseList));
-    console.log(JSON.stringify(exerciseListData));
-    res.json(exerciseListData);
+    // have to go over exerciseList (SingleExercises...)
+    const modifiedExerciseList = workoutData.exerciseList.map((singleExercise) => ({
+        isNew: false,
+        id: singleExercise._id,
+        exerciseName: singleExercise.exerciseName,
+        setLog: singleExercise.setLog,
+    }));
+    res.json(modifiedExerciseList);
 });
 
 // handle a new workout create on POST.
@@ -141,7 +208,6 @@ exports.workout_create_post = [
         // create my WorkoutLog
         // we should add date here, not receive it from front!
         const workoutLog = new WorkoutLog({
-            
             // date: req.body.date,
             user_id: req.body.user_id,
             exerciseList: exerciseObjectList,
