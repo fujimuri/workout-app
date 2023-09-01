@@ -112,11 +112,15 @@ function WorkoutLog(props) {
         }
         // workout submit or workout update?
         // changing to workout update for now!
-        await props.handleWorkoutUpdate(props.id, workoutLogToSend);
-        // TODO: PUT BACK function below!
-        // await props.handleWorkoutSubmit(true, workoutLogToSend);
-        // tell Archive this WorkoutLog was submitted
-        props.finishWorkoutEditing(props.id, workoutLogToSend);
+        if (props.workoutLogIsNew) {
+            alert("saving new workout!")
+            await props.handleWorkoutSubmit(workoutLogToSend);
+        } else {
+            // updating existing workout
+            await props.handleWorkoutUpdate(props.id, workoutLogToSend);
+            // tell Archive this WorkoutLog was submitted
+            props.finishWorkoutEditing(props.id, workoutLogToSend);
+        }
     }
 
     const editingTemplate = (

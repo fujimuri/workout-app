@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import WorkoutLogPreview from './WorkoutLogPreview';
 import WorkoutLog from './WorkoutLog';
 
 function Archive(props) {
@@ -138,6 +137,7 @@ function Archive(props) {
                         </button>
                         { workout.hasBeenClicked &&
                         <WorkoutLog
+                        workoutLogIsNew={false}
                         id={workout.workoutID}
                         isEditing={workout.isEditing}
                         isPrefilled={true}
