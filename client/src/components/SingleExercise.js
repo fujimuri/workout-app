@@ -23,13 +23,15 @@ function SingleExercise(props) {
     const [currentSetList, setSetList] =
     useState(initialListOfSets);
 
+    // initialize setList with the props
     useEffect(() => {
         if (props.isPrefilled) {
             setSetList(props.setLog);
         }
-    });
+    }, [currentSetList]);
     // }, []);
 
+    // handle specific set change
     function handleSetChange(id, changedWeight, changedSets,
         changedReps) {
         const changedSetList = currentSetList.map((set) =>
@@ -63,13 +65,18 @@ function SingleExercise(props) {
     // assign id to new set
     function handleAddingSet(e) {
         e.preventDefault();
+        alert("adding a new set!");
         // create new empty set with unique id
         const newId = uuidv4();
         const newSet = emptySet;
         // assign new id
         newSet.id = newId;
         const newList = currentSetList.concat(newSet);
+        alert("new list with new set is" + JSON.stringify(newList));
         setSetList(newList);
+        // adding a new set is also an exercise change
+        props.handleExerciseChange(props.id, currentExerciseName,
+            newList);
     }
 
     const editingTemplate = (
