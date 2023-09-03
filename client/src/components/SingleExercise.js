@@ -66,14 +66,14 @@ function SingleExercise(props) {
     // assign id to new set
     function handleAddingSet(e) {
         e.preventDefault();
-        alert("adding a new set!");
+        // alert("adding a new set!");
         // create new empty set with unique id
         const newId = uuidv4();
         const newSet = emptySet;
         // assign new id
         newSet.id = newId;
         const newList = currentSetList.concat(newSet);
-        alert("new list with new set is" + JSON.stringify(newList));
+        // alert("new list with new set is" + JSON.stringify(newList));
         setSetList(newList);
         // adding a new set is also an exercise change
         props.handleExerciseChange(props.id, currentExerciseName,

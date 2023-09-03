@@ -50,6 +50,7 @@ function SingleSet(props) {
             <input
             className="input-number"
             type="number"
+            step='any'
             placeholder='weight'
             defaultValue={props.weight}
             onChange={handleWeightChange}>
@@ -60,6 +61,7 @@ function SingleSet(props) {
             <input
             className="input-number"
             type="number"
+            step='any'
             placeholder="sets"
             defaultValue={props.sets}
             onChange={handleSetsChange}>
@@ -70,6 +72,7 @@ function SingleSet(props) {
             <input
             className="input-number"
             type="number"
+            step='any'
             placeholder="reps"
             defaultValue={props.reps}
             onChange={handleRepsChange}>

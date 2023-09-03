@@ -219,12 +219,14 @@ exports.workout_view_get = asyncHandler(async(req, res) => {
 // handle a new workout create on POST.
 exports.workout_create_post = [
     // validate input
-    body("exerciseList.*.setLog.*.*")
-    .trim()
-    .isNumeric(),
+    // removing this for now
+    // body("exerciseList.*.setLog.*.*")
+    // .trim()
+    // .isNumeric(),
     // process request after validation
     asyncHandler(async (req, res) => {
-        const errors = validationResult(req);
+        const errors = false;
+        // const errors = validationResult(req);
         // create a list of SingleExercises: that's our
         // exerciseList.
         const exerciseObjectList = (req.body.exerciseList).map(
@@ -246,8 +248,10 @@ exports.workout_create_post = [
         
         const workoutID = workoutLog._id;
 
-        if (!errors.isEmpty()) {
+        if (errors) {
             // todo
+            console.log("errors in creating workoutLog")
+            console.log(JSON.stringify(errors))
             return;
         } else {
             // save exercise logs

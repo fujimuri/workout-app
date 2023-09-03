@@ -95,9 +95,9 @@ function WorkoutLog(props) {
                 //         }
                 //     }
                 // )
-                alert("exercise.isNew is" + exercise.isNew);
-                alert("exercise's setLog is:")
-                alert(JSON.stringify(exercise.setLog))
+                // alert("exercise.isNew is" + exercise.isNew);
+                // alert("exercise's setLog is:")
+                // alert(JSON.stringify(exercise.setLog))
                 return {
                     isNew: exercise.isNew,
                     id: exercise.id, // if exercise not new, then
