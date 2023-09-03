@@ -12,7 +12,7 @@ function WorkoutLog(props) {
         id: null,
         exerciseName: 'Squat',
         setLog: [
-        {id: null, weight: null, sets: null, reps: null},
+        {isNew: true, id: null, weight: null, sets: null, reps: null},
       ]
     }
 
@@ -85,23 +85,25 @@ function WorkoutLog(props) {
         // for it on my backend.
         const exerciseListToSend = currentExerciseList.map(
             (exercise) => {
-                // go over setList and copy without id
-                const setLog = exercise.setLog.map(
-                    (set) => {
-                        return {
-                            weight: set.weight,
-                            sets: set.sets,
-                            reps: set.reps,
-                        }
-                    }
-                )
+                // I don't need to reset id anymore!
+                // const setLog = exercise.setLog.map(
+                //     (set) => {
+                //         return {
+                //             weight: set.weight,
+                //             sets: set.sets,
+                //             reps: set.reps,
+                //         }
+                //     }
+                // )
                 alert("exercise.isNew is" + exercise.isNew);
+                alert("exercise's setLog is:")
+                alert(JSON.stringify(exercise.setLog))
                 return {
                     isNew: exercise.isNew,
                     id: exercise.id, // if exercise not new, then
                     // this id is from DB. else, we ignore it.
                     exerciseName: exercise.exerciseName,
-                    setLog: setLog,
+                    setLog: exercise.setLog,
                 }
             }
         )

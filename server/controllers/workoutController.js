@@ -72,20 +72,45 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     .exec();
     
     // prepare workoutLogs to send to frontend
-    const modifiedWorkoutLogs = workoutLogs.map((workout) => {
-        const modifiedExerciseList = workout.exerciseList.map((singleExercise) => ({
-          isNew: false,
-          id: singleExercise._id,
-          exerciseName: singleExercise.exerciseName,
-          setLog: singleExercise.setLog,
-        }));
+    // const modifiedWorkoutLogs = workoutLogs.map((workout) => {
+    //     const modifiedExerciseList = workout.exerciseList.map((singleExercise) => ({
+    //       isNew: false,
+    //       id: singleExercise._id,
+    //       exerciseName: singleExercise.exerciseName,
+    //       setLog: singleExercise.setLog,
+    //     }));
       
+    //     return {
+    //       id: workout._id,
+    //       date: workout.date_formatted,
+    //       exerciseList: modifiedExerciseList,
+    //     };
+    //   });
+
+    const modifiedWorkoutLogs = workoutLogs.map((workout) => {
+        const modifiedExerciseList = workout.exerciseList.map((singleExercise) => {
+            const modifiedSetLog = singleExercise.setLog.map((set) => ({
+                isNew: false,
+                id: set._id,
+                weight: set.weight,
+                sets: set.sets,
+                reps: set.reps,
+            }));
+    
+            return {
+                isNew: false,
+                id: singleExercise._id,
+                exerciseName: singleExercise.exerciseName,
+                setLog: modifiedSetLog,
+            };
+        });
+    
         return {
-          id: workout._id,
-          date: workout.date_formatted,
-          exerciseList: modifiedExerciseList,
+            id: workout._id,
+            date: workout.date_formatted,
+            exerciseList: modifiedExerciseList,
         };
-      });
+    });
 
     res.json(modifiedWorkoutLogs);
 });
@@ -105,6 +130,8 @@ exports.workout_update_post = [
         const updatedExerciseIDs = [];
     
         for (const exercise of exerciseList) {
+            console.log("the set log of current exercise is:");
+            console.log(JSON.stringify(exercise.setLog));
             if (exercise.isNew) {
                 // Create a new SingleExercise object with the exercise data
                 const newExercise = new SingleExercise({
