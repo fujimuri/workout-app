@@ -34,6 +34,9 @@ function App(props) {
     }
   }, [isEditing, setBackendData]);
 
+  // deleted workouts state counter
+  const [workoutDeletedCount, setWorkoutDeletedCount] = useState(0);
+
   // handle workout submit... but this can be new or update
   // existing, in which case I need the workout id!
   const handleWorkoutSubmit = async (workoutLog) => {
@@ -57,7 +60,7 @@ function App(props) {
         // Handle any network or other errors
         console.error('Error saving workout:', error);
     }
-};
+  };
 
   const handleWorkoutUpdate = async (workoutID, workoutLog) => {
     await fetch(`http://localhost:5000/workouts/${workoutID}/update`, {
@@ -76,6 +79,23 @@ function App(props) {
     })
   }
 
+  const handleWorkoutDeletion = async (workoutID) => {
+    await fetch(`http://localhost:5000/workouts/${workoutID}/delete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(
+      response => {
+      if (response.ok) {
+        return true
+      } else {
+        throw new Error('Request failed'); // Handle the error case
+      }
+    })
+    setWorkoutDeletedCount((prevCount) => prevCount + 1);
+  }
+
   return (
     <div>
       <Header pageName={props.pageName}/>
@@ -85,7 +105,9 @@ function App(props) {
           isEditing={false}
           isPrefilled={true}
           handleWorkoutSubmit={handleWorkoutSubmit}
-          handleWorkoutUpdate={handleWorkoutUpdate}/>
+          handleWorkoutUpdate={handleWorkoutUpdate}
+          handleWorkoutDeletion={handleWorkoutDeletion}
+          workoutDeletedCount={workoutDeletedCount}/>
         ) : (
           <WorkoutLog
           workoutLogIsNew={true}
@@ -93,6 +115,7 @@ function App(props) {
           isPrefilled={isPrefilled}
           data={backendData}
           handleWorkoutSubmit={handleWorkoutSubmit}
+          handleWorkoutDeletion={handleWorkoutDeletion}
           />
         )
       }

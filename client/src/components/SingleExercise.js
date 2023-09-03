@@ -32,6 +32,15 @@ function SingleExercise(props) {
     }, [currentSetList]);
     // }, []);
 
+    // handle deletion of set with id
+    function handleSetDeletion(idToDelete) {
+        const changedSetList =
+        currentSetList.filter((set) => set.id !== idToDelete);
+        setSetList(changedSetList);
+        props.handleExerciseChange(props.id, currentExerciseName,
+            changedSetList);
+    }
+
     // handle specific set change
     function handleSetChange(id, changedWeight, changedSets,
         changedReps) {
@@ -80,8 +89,13 @@ function SingleExercise(props) {
             newList);
     }
 
+    function handleExerciseDeletion(e) {
+        e.preventDefault();
+        props.handleExerciseDeletion(props.id);
+    }
+
     const editingTemplate = (
-        <div>
+        <div className="container">
             <select
             className="dropdown-menu"
             defaultValue={initialExerciseName}
@@ -94,6 +108,11 @@ function SingleExercise(props) {
             <option value="Power Clean"> Power Clean </option>
             <option value="Add Your Own"> Add Your Own </option>
             </select>
+            <button
+            className="btn delete-exercise-btn"
+            onClick={handleExerciseDeletion}>
+                Delete This Exercise
+            </button>
             <ul className="list-of-sets">
                 {currentSetList?.map((set) => (
                     <li key={set.id}>
@@ -104,6 +123,7 @@ function SingleExercise(props) {
                         sets={set.sets}
                         reps={set.reps}
                         handleSetChange={handleSetChange}
+                        handleSetDeletion={handleSetDeletion}
                         />
                     </li>
                 ))}

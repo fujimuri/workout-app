@@ -50,5 +50,7 @@ app.post('/workouts/:id/update', workout_controller.workout_update_post);
 
 app.get('/workouts', workout_controller.workouts_get);
 
+app.post('/workouts/:id/delete', workout_controller.workout_delete_post);
+
 app.listen(5000, () =>
 { console.log("server started on port 5000")});

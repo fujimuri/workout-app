@@ -45,6 +45,11 @@ function SingleSet(props) {
         currentSetValue.sets, currentSetValue.reps);
     }
 
+    function handleSetDeletion(e) {
+        e.preventDefault();
+        props.handleSetDeletion(props.id);
+    }
+
     const editingTemplate = (
         <div className="single-set-form">
             <input
@@ -77,6 +82,12 @@ function SingleSet(props) {
             defaultValue={props.reps}
             onChange={handleRepsChange}>
             </input>
+            <button
+            className="btn delete-set-btn"
+            onClick={handleSetDeletion}
+            >
+                X
+            </button>
         </div>
     )
 

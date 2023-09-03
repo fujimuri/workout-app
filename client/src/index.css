@@ -208,11 +208,26 @@ ul > li {
   background-color: #e6d7ff;
 } */
 
-.single-exercise {
+/* .single-exercise {
   margin-bottom: 10px;
   padding: 10px;
   border: 1px solid black;
   border-radius: 5px;
+} */
+
+.single-exercise {
+  position: relative; /* Set the parent container to relative positioning */
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.delete-exercise-btn {
+  position: absolute; /* Set the delete button to absolute positioning */
+  top: 5px; /* Adjust the top position as needed */
+  right: 5px; /* Adjust the right position as needed */
+  font-size: 20px;
 }
 
 .list-of-sets {
@@ -288,6 +303,11 @@ ul > li {
 }
 .btn-group > * + * {
   margin-left: 0.8rem;
+}
+
+.delete-set-btn {
+  font-size: 15px;
+  padding: 0.5rem 0.7rem 0.5rem;
 }
 
 /* Workout Log Design */

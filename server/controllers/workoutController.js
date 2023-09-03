@@ -115,6 +115,27 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     res.json(modifiedWorkoutLogs);
 });
 
+exports.workout_delete_post = asyncHandler(async(req, res) => {
+    const workoutID = req.params.id;
+    console.log("deleting workout with id " + workoutID);
+    try {
+        // Find the workout by ID and remove it
+        const deletedWorkout = await WorkoutLog.findByIdAndRemove(workoutID);
+
+        if (!deletedWorkout) {
+            // If the workout with the given ID is not found, return an error
+            return res.status(404).send("Workout not found");
+        }
+
+        // Successfully deleted the workout
+        res.status(200).send("Workout deleted successfully");
+    } catch (error) {
+        // Handle any errors that occur during the deletion process
+        console.error("Error deleting workout:", error);
+        res.status(500).send("Error deleting workout");
+    }
+});
+
 // update workout with given id
 exports.workout_update_post = [
     // validate and sanitize fields

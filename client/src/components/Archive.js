@@ -21,7 +21,8 @@ function Archive(props) {
         ).then(
         data => setBackendData(data)
         )
-    }, [exerciseName, dateRange, showWorkoutsWithPRs]);
+    }, [exerciseName, dateRange, showWorkoutsWithPRs,
+        props.workoutDeletedCount]);
 
     // a second useEffect to update my workoutList correctly
     useEffect(() => {
@@ -62,8 +63,6 @@ function Archive(props) {
         })
         setWorkoutList(changedWorkoutList);
     }
-    // the question is, will this reload the workout with the new
-    // data?
 
 
     function onClickDisplayOrHideWorkout(id) {
@@ -145,7 +144,8 @@ function Archive(props) {
                         handleWorkoutSubmit={props.handleWorkoutSubmit}
                         handleWorkoutEdit={handleWorkoutEdit}
                         finishWorkoutEditing={finishWorkoutEditing}
-                        handleWorkoutUpdate={props.handleWorkoutUpdate}/>
+                        handleWorkoutUpdate={props.handleWorkoutUpdate}
+                        handleWorkoutDeletion={props.handleWorkoutDeletion}/>
                         }
                     </div>
                 </li>

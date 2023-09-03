@@ -57,6 +57,14 @@ function WorkoutLog(props) {
         setExerciseList(editedExerciseList);
     }
 
+    // delete exercise with given id
+    function handleExerciseDeletion(idToDelete) {
+        const editedExerciseList =
+        currentExerciseList.filter(
+            (exercise) => exercise.id !== idToDelete);
+        setExerciseList(editedExerciseList);
+    }
+
     // user clicks 'Add a new exercise', create new empty guy.
     function handleAddingExercise(e) {
         e.preventDefault();
@@ -72,6 +80,13 @@ function WorkoutLog(props) {
         // tell Archive that this workoutLog is being edited,
         // which will reload this component
         props.handleWorkoutEdit(props.id);
+    }
+
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        // delete this WorkoutLog in the database.
+        // So App should have this function. :)
+        props.handleWorkoutDeletion(props.id);
     }
 
     // handle submit of workout: for now, this is for a NEW
@@ -139,6 +154,7 @@ function WorkoutLog(props) {
                     exerciseName={exercise.exerciseName}
                     setLog={exercise.setLog}
                     handleExerciseChange={handleExerciseChange}
+                    handleExerciseDeletion={handleExerciseDeletion}
                     />
                 </li>
                 ))}
@@ -153,6 +169,14 @@ function WorkoutLog(props) {
             type="submit">
                 Save Workout
             </button>
+            {props.isPrefilled && (
+            <button
+            onClick={handleDelete}
+            className="btn btn-submit-workout"
+            type="submit">
+                Delete Workout
+            </button>
+            )}
         </form>
         </div>
     )
@@ -176,8 +200,7 @@ function WorkoutLog(props) {
                 className="btn">
                     Edit Workout
                 </button>
-                <button
-                className="btn">
+                <button onClick={handleDelete} className="btn">
                     Delete Workout
                 </button>
             </ul>
