@@ -223,6 +223,15 @@ ul > li {
   border-radius: 5px;
 }
 
+.btn-add-set {
+  font-size: 20px;
+}
+
+.btn-submit-workout {
+  background-color: #e6dada;
+  margin-right: 10px;
+}
+
 .delete-exercise-btn {
   position: absolute; /* Set the delete button to absolute positioning */
   top: 5px; /* Adjust the top position as needed */

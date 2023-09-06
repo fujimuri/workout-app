@@ -86,7 +86,7 @@ function SingleSet(props) {
             className="btn delete-set-btn"
             onClick={handleSetDeletion}
             >
-                X
+                &#x2715;
             </button>
         </div>
     )

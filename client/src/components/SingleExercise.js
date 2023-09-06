@@ -111,7 +111,7 @@ function SingleExercise(props) {
             <button
             className="btn delete-exercise-btn"
             onClick={handleExerciseDeletion}>
-                Delete This Exercise
+                &#x2715;
             </button>
             <ul className="list-of-sets">
                 {currentSetList?.map((set) => (
@@ -131,7 +131,7 @@ function SingleExercise(props) {
                     <button
                     className="btn btn-add-set"
                     onClick={handleAddingSet}>
-                        Add Another Set
+                        + Add Set
                     </button>
                 </li>
             </ul>

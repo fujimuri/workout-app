@@ -161,7 +161,7 @@ function WorkoutLog(props) {
                 <button
                 className="btn btn-add-exercise single-exercise"
                 onClick={handleAddingExercise}>
-                    Add Another Exercise
+                    + Add Exercise
                 </button>
             </ul>
             <button
@@ -197,10 +197,12 @@ function WorkoutLog(props) {
                 ))}
                 <button
                 onClick={handleEdit}
-                className="btn">
+                className="btn btn-submit-workout">
                     Edit Workout
                 </button>
-                <button onClick={handleDelete} className="btn">
+                <button
+                onClick={handleDelete}
+                className="btn btn-submit-workout">
                     Delete Workout
                 </button>
             </ul>
