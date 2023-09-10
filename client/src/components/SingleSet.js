@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 function SingleSet(props) {
     const setInitialValue = {
@@ -6,6 +6,7 @@ function SingleSet(props) {
         weight: props.weight,
         sets: props.sets,
         reps: props.reps,
+        inputErrors: props.inputErrors,
     }
 
     const [currentSetValue, updateSetValue] =
@@ -18,69 +19,61 @@ function SingleSet(props) {
     const [repsError, setRepsError] = useState(false)
 
     function handleWeightChange(e) {
-        // update weight
-        const setWithUpdatedWeight = currentSetValue;
-        // const setWithUpdatedWeight =
-        // {...currentSetValue, weight: e.target.value};
         const newWeight = e.target.value;
-        setWithUpdatedWeight.weight = newWeight;
-        updateSetValue(setWithUpdatedWeight);
-        // send to fater
-        props.handleSetChange(currentSetValue.id, currentSetValue.weight,
-        currentSetValue.sets, currentSetValue.reps);
-        // validate input and show error message if needed
-        // TODO update errors variable
-        if (!/^[0-9]*(\.[0-9]+)?$/.test(newWeight)
-        || parseFloat(newWeight) <= 0) {
-            setCurrentErrorMessage('Weight must be a positive number');
+        const setWithUpdatedWeight = currentSetValue;
+        if (newWeight !== "" && !/^-?[0-9]*(\.[0-9]+)?$/.test(newWeight)) {
+            setCurrentErrorMessage('Weight must be a number');
             setWeightError(true);
+            setWithUpdatedWeight.inputErrors = true;
         } else {
             // weight input is ok :)
             setCurrentErrorMessage('');
             setWeightError(false);
+            setWithUpdatedWeight.inputErrors = false;
         }
+        setWithUpdatedWeight.weight = newWeight;
+        updateSetValue(setWithUpdatedWeight);
+        props.handleSetChange(currentSetValue.id, currentSetValue.weight,
+        currentSetValue.sets, currentSetValue.reps, currentSetValue.inputErrors);
     }
 
-    function handleSetsChange(e) {
-        // update sets
-        const setWithUpdatedSets = currentSetValue;
-        // const setWithUpdatedSets =
-        // {...currentSetValue, sets: e.target.value};
+    function handleSetsChange(e)
+    {
         const newSets = e.target.value;
-        setWithUpdatedSets.sets = newSets;
-        updateSetValue(setWithUpdatedSets);
-        props.handleSetChange(currentSetValue.id, currentSetValue.weight,
-        currentSetValue.sets, currentSetValue.reps);
-        // validate input and show error message if needed
-        // TODO update errors variable
-        if (!/^[1-9]\d*$/.test(newSets)
-        || parseFloat(newSets) <= 0) {
+        const setWithUpdatedSets = currentSetValue;
+        if (newSets !== "" && (!/^[1-9]\d*$/.test(newSets)
+        || parseFloat(newSets) <= 0)) {
             setCurrentErrorMessage('Sets must be a whole positive number');
             setSetsError(true);
+            setWithUpdatedSets.inputErrors = true;
         } else {
             setCurrentErrorMessage('');
             setSetsError(false);
+            setWithUpdatedSets.inputErrors = false;
         }
+        setWithUpdatedSets.sets = newSets;
+        updateSetValue(setWithUpdatedSets);
+        props.handleSetChange(currentSetValue.id, currentSetValue.weight,
+        currentSetValue.sets, currentSetValue.reps, currentSetValue.inputErrors);
     }
 
     function handleRepsChange(e) {
-        // update reps
-        const setWithUpdatedReps = currentSetValue;
-        // const setWithUpdatedReps =
-        // {...currentSetValue, reps: e.target.value};
         const newReps = e.target.value;
-        setWithUpdatedReps.reps = newReps;
-        updateSetValue(setWithUpdatedReps);
-        props.handleSetChange(currentSetValue.id, currentSetValue.weight,
-        currentSetValue.sets, currentSetValue.reps);
-        if (!/^[1-9]\d*$/.test(newReps)
-        || parseFloat(newReps) <= 0) {
+        const setWithUpdatedReps = currentSetValue;
+        if (newReps !== "" && (!/^[1-9]\d*$/.test(newReps)
+        || parseFloat(newReps) <= 0)) {
             setCurrentErrorMessage('Reps must be a whole positive number');
             setRepsError(true);
+            setWithUpdatedReps.inputErrors = true;
         } else {
             setCurrentErrorMessage('');
             setRepsError(false);
+            setWithUpdatedReps.inputErrors = false;
         }
+        setWithUpdatedReps.reps = newReps;
+        updateSetValue(setWithUpdatedReps);
+        props.handleSetChange(currentSetValue.id, currentSetValue.weight,
+        currentSetValue.sets, currentSetValue.reps, currentSetValue.inputErrors);
     }
 
     function handleSetDeletion(e) {

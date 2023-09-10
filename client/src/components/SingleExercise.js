@@ -19,6 +19,7 @@ function SingleExercise(props) {
         weight: null,
         sets: null,
         reps: null,
+        inputErrors: false,
     }
 
     const [currentSetList, setSetList] =
@@ -43,12 +44,13 @@ function SingleExercise(props) {
 
     // handle specific set change
     function handleSetChange(id, changedWeight, changedSets,
-        changedReps) {
+        changedReps, changedInputErrors) {
         const changedSetList = currentSetList.map((set) =>
         {
             if (id === set.id) {
                 return {...set, weight: changedWeight,
-                sets: changedSets, reps: changedReps}
+                sets: changedSets, reps: changedReps,
+                inputErrors: changedInputErrors}
             }
             return set;
         });
@@ -122,6 +124,7 @@ function SingleExercise(props) {
                         weight={set.weight}
                         sets={set.sets}
                         reps={set.reps}
+                        inputErrors={set.inputErrors}
                         handleSetChange={handleSetChange}
                         handleSetDeletion={handleSetDeletion}
                         />

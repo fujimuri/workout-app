@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 // create a workout log, which is a list of single exercises,
 // each of which in turn has a list of sets
 function WorkoutLog(props) {
+    const [errorMessage, setErrorMessage] = useState('');
     // create an empty exercise with a single empty set.
     const emptyExercise = {
         isNew: true, // tells the DB whether to generate a new
@@ -12,7 +13,8 @@ function WorkoutLog(props) {
         id: null,
         exerciseName: 'Squat',
         setLog: [
-        {isNew: true, id: null, weight: null, sets: null, reps: null},
+        {isNew: true, id: null, weight: null, sets: null,
+            reps: null, inputErrors: false,},
       ]
     }
 
@@ -89,54 +91,55 @@ function WorkoutLog(props) {
         props.handleWorkoutDeletion(props.id);
     }
 
-    // handle submit of workout: for now, this is for a NEW
-    // workout. we have to post the data to the DB.
-    // we'll do that in App.js
     const handleSubmit = async (e) => {
+        let hasErrors = false;
         e.preventDefault();
-        // if the SingleExercise exists, I want to send its
-        // id back to the server. If it doesn't and
-        // was added, I have to generate a new ExerciseLog
-        // for it on my backend.
-        const exerciseListToSend = currentExerciseList.map(
-            (exercise) => {
-                // I don't need to reset id anymore!
-                // const setLog = exercise.setLog.map(
-                //     (set) => {
-                //         return {
-                //             weight: set.weight,
-                //             sets: set.sets,
-                //             reps: set.reps,
-                //         }
-                //     }
-                // )
-                // alert("exercise.isNew is" + exercise.isNew);
-                // alert("exercise's setLog is:")
-                // alert(JSON.stringify(exercise.setLog))
-                return {
-                    isNew: exercise.isNew,
-                    id: exercise.id, // if exercise not new, then
-                    // this id is from DB. else, we ignore it.
-                    exerciseName: exercise.exerciseName,
-                    setLog: exercise.setLog,
-                }
+        // first, check that there are no errors in input
+        // and then check that no fields were left empty.
+        for (const exercise of currentExerciseList) {
+            for (const set of exercise.setLog) {
+              if (set.inputErrors) {
+                // there is a set with an input error
+                hasErrors = true;
+                break;
+              }
             }
-        )
-        // removed react id's
-        const workoutLogToSend = {
-            user_id: 0,
-            exerciseList: exerciseListToSend,
-        }
-        // workout submit or workout update?
-        // changing to workout update for now!
-        if (props.workoutLogIsNew) {
-            alert("saving new workout!")
-            await props.handleWorkoutSubmit(workoutLogToSend);
+          }
+        // TODO check for empty fields -> I need to check because
+        // I'll do calculations for PRs and Hall of Fame later
+        if (hasErrors) {
+            setErrorMessage(
+                'There are errors in the input. Please fix them before submitting.')
         } else {
-            // updating existing workout
-            await props.handleWorkoutUpdate(props.id, workoutLogToSend);
-            // tell Archive this WorkoutLog was submitted
-            props.finishWorkoutEditing(props.id, workoutLogToSend);
+            // if the SingleExercise exists, I want to send its
+            // id back to the server. If it doesn't and
+            // was added, I have to generate a new ExerciseLog
+            // for it on my backend.
+            const exerciseListToSend = currentExerciseList.map(
+                (exercise) => {
+                    return {
+                        isNew: exercise.isNew,
+                        id: exercise.id, // if exercise not new, then
+                        // this id is from DB. else, we ignore it.
+                        exerciseName: exercise.exerciseName,
+                        setLog: exercise.setLog,
+                    }
+                }
+            )
+            const workoutLogToSend = {
+                user_id: 0,
+                exerciseList: exerciseListToSend,
+            }
+            // workout submit or workout update
+            if (props.workoutLogIsNew) {
+                alert("saving new workout!")
+                await props.handleWorkoutSubmit(workoutLogToSend);
+            } else {
+                // updating existing workout
+                await props.handleWorkoutUpdate(props.id, workoutLogToSend);
+                // tell Archive this WorkoutLog was submitted
+                props.finishWorkoutEditing(props.id, workoutLogToSend);
+            }
         }
     }
 
@@ -177,6 +180,9 @@ function WorkoutLog(props) {
                 Delete Workout
             </button>
             )}
+            <div className='submit-workout-error-msg'>
+                {errorMessage}
+            </div>
         </form>
         </div>
     )

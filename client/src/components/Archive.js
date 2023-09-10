@@ -15,14 +15,35 @@ function Archive(props) {
 
     // fetch data from backend/archive
     // should fetch again after saving an edited workout as well
+    // useEffect(() => {
+    //     fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`).then(
+    //     response => response.json()
+    //     ).then(
+    //     data => setBackendData(data)
+    //     )
+    // }, [exerciseName, dateRange, showWorkoutsWithPRs,
+    //     props.workoutDeletedCount]);
+
     useEffect(() => {
-        fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`).then(
-        response => response.json()
-        ).then(
-        data => setBackendData(data)
-        )
-    }, [exerciseName, dateRange, showWorkoutsWithPRs,
-        props.workoutDeletedCount]);
+        fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`)
+            .then(response => response.json())
+            .then(data => {
+            // Modify the fetched data to include 'inputError' field
+            const modifiedData = data.map(workout => ({
+                ...workout,
+                exerciseList: workout.exerciseList.map(exercise => ({
+                ...exercise,
+                setLog: exercise.setLog.map(singleSet => ({
+                    ...singleSet,
+                    inputErrors: false,
+                })),
+                })),
+            }));
+        
+            setBackendData(modifiedData);
+            console.log(modifiedData)
+            });
+        }, [exerciseName, dateRange, showWorkoutsWithPRs, props.workoutDeletedCount]);
 
     // a second useEffect to update my workoutList correctly
     useEffect(() => {

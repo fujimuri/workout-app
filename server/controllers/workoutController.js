@@ -70,22 +70,6 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     .populate('exerciseList')
     .sort({ date: -1 })
     .exec();
-    
-    // prepare workoutLogs to send to frontend
-    // const modifiedWorkoutLogs = workoutLogs.map((workout) => {
-    //     const modifiedExerciseList = workout.exerciseList.map((singleExercise) => ({
-    //       isNew: false,
-    //       id: singleExercise._id,
-    //       exerciseName: singleExercise.exerciseName,
-    //       setLog: singleExercise.setLog,
-    //     }));
-      
-    //     return {
-    //       id: workout._id,
-    //       date: workout.date_formatted,
-    //       exerciseList: modifiedExerciseList,
-    //     };
-    //   });
 
     const modifiedWorkoutLogs = workoutLogs.map((workout) => {
         const modifiedExerciseList = workout.exerciseList.map((singleExercise) => {
@@ -111,7 +95,7 @@ exports.workouts_get = asyncHandler(async(req, res) => {
             exerciseList: modifiedExerciseList,
         };
     });
-
+    console.log(modifiedWorkoutLogs);
     res.json(modifiedWorkoutLogs);
 });
 

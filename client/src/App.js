@@ -23,14 +23,37 @@ function App(props) {
   // fetch data for a specific workout: I use this for
   // workouts/:id/view or edit page, however soon I'm going
   // to replace that with my archive page anyway. <3
+  // useEffect(() => {
+  //   if (isPrefilled) {
+  //     console.log("fetching data for workout log!");
+  //     fetch(`http://localhost:5000/workouts/${id}`).then(
+  //     response => response.json()
+  //   ).then(
+  //     data => setBackendData(data)
+  //   )
+  //   }
+  // }, [isEditing, setBackendData]);
+
   useEffect(() => {
     if (isPrefilled) {
       console.log("fetching data for workout log!");
-      fetch(`http://localhost:5000/workouts/${id}`).then(
-      response => response.json()
-    ).then(
-      data => setBackendData(data)
-    )
+      fetch(`http://localhost:5000/workouts/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          // Iterate through the fetched data and add inputErrors: false
+          const dataWithInputErrors = data.map((workout) => ({
+            ...workout,
+            exerciseList: workout.exerciseList.map((exercise) => ({
+              ...exercise,
+              setLog: exercise.setLog.map((set) => ({
+                ...set,
+                inputErrors: false,
+              })),
+            })),
+          }));
+          
+          setBackendData(dataWithInputErrors);
+        });
     }
   }, [isEditing, setBackendData]);
 
