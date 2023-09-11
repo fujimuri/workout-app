@@ -113,7 +113,7 @@ function WorkoutLog(props) {
             }
           }
         // REMOVING FOR TESTING - END
-        
+
         // TODO check for empty fields -> I need to check because
         // I'll do calculations for PRs and Hall of Fame later
         // if there's a partially filled singleSet, set message
@@ -158,6 +158,11 @@ function WorkoutLog(props) {
                     // problem with saving!
                     if (submissionResult.status === 400) {
                         setErrorMessage(submissionResult.errorData.join(',\n'));
+                    }
+                    if (submissionResult.status === 500) {
+                        setErrorMessage(
+                            'An internal server error occurred while processing your request. Please try again later.'
+                        )
                     }
                 }
             } else {
