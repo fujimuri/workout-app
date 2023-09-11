@@ -20,20 +20,6 @@ function App(props) {
 
   const [backendData, setBackendData] = useState([{}]);
 
-  // fetch data for a specific workout: I use this for
-  // workouts/:id/view or edit page, however soon I'm going
-  // to replace that with my archive page anyway. <3
-  // useEffect(() => {
-  //   if (isPrefilled) {
-  //     console.log("fetching data for workout log!");
-  //     fetch(`http://localhost:5000/workouts/${id}`).then(
-  //     response => response.json()
-  //   ).then(
-  //     data => setBackendData(data)
-  //   )
-  //   }
-  // }, [isEditing, setBackendData]);
-
   useEffect(() => {
     if (isPrefilled) {
       console.log("fetching data for workout log!");
@@ -60,8 +46,7 @@ function App(props) {
   // deleted workouts state counter
   const [workoutDeletedCount, setWorkoutDeletedCount] = useState(0);
 
-  // handle workout submit... but this can be new or update
-  // existing, in which case I need the workout id!
+  // handle submit of a new workout :)
   const handleWorkoutSubmit = async (workoutLog) => {
     try {
         const response = await fetch('http://localhost:5000/new', {
@@ -71,19 +56,62 @@ function App(props) {
                 'Content-Type': 'application/json'
             }
         });
-
         if (response.ok) {
-            // If the POST request is successful, navigate to /workouts
-            navigate('/workouts');
+              navigate('/workouts');
+              return {
+                success: true,
+              }
+        } else if (response.status === 400) {
+          // validation errors
+            console.error('Bad Request: There was a problem with the request data.');
+            const responseData = await response.json();
+            return {
+              success: false,
+              status: 400,
+              errorData: responseData.validationErrors,
+            }
+        } else if (response.status === 500) {
+            // Handle Internal Server Error (status code 500)
+            console.error('Internal Server Error: There was a problem on the server.');
+            const responseData = await response.json();
+            console.error('Response Data:', responseData);
+            return {
+              success: false,
+              status: 500,
+            }
         } else {
-            // Handle any errors that occur during the POST request
+            // Handle unexpected errors (status codes other than 400, 500, and not OK)
             console.error('Failed to save workout:', response.statusText);
         }
     } catch (error) {
         // Handle any network or other errors
         console.error('Error saving workout:', error);
     }
-  };
+  }
+  // };
+  // // handle submit of a new workout :)
+  // const handleWorkoutSubmit = async (workoutLog) => {
+  //   try {
+  //       const response = await fetch('http://localhost:5000/new', {
+  //           method: 'POST',
+  //           body: JSON.stringify(workoutLog),
+  //           headers: {
+  //               'Content-Type': 'application/json'
+  //           }
+  //       });
+  //       if (response.ok) {
+  //         const responseData = await response.json();
+  //         if (responseData.success) {
+  //           navigate('/workouts');
+  //       } else {
+  //         // check if it's inputErrors or database problem
+  //           console.error('Failed to save workout:', response.statusText);
+  //       }
+  //   } catch (error) {
+  //       // Handle any network or other errors
+  //       console.error('Error saving workout:', error);
+  //   }
+  // }};
 
   const handleWorkoutUpdate = async (workoutID, workoutLog) => {
     await fetch(`http://localhost:5000/workouts/${workoutID}/update`, {

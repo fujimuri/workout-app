@@ -4,20 +4,6 @@ const asyncHandler = require('express-async-handler');
 // validation
 const { body, validationResult } = require('express-validator');
 
-// helper function :)
-async function findWorkoutsContainingExercise (exerciseName) {
-    const singleExercisesFiltered =
-    await SingleExercise.find({ exerciseName: exerciseName });
-
-    const filteredWorkoutLogs = await WorkoutLog.find({
-        exerciseList:
-        { $in: singleExercisesFiltered.map(
-            (singleExercise) => singleExercise._id)
-        }
-    }).populate("exerciseList").sort({ date: 1 }).exec();
-    return filteredWorkoutLogs;
-}
-
 // handle GET on list of workouts
 exports.workouts_get = asyncHandler(async(req, res) => {
     // filter params
@@ -193,17 +179,6 @@ exports.workout_archive_get = asyncHandler(async(req, res) => {
     .sort({ date: -1 })
     .populate("exerciseList")
     .exec();
-    // get id's as strings and format date nicely
-    // const allWorkoutsIDsAndDatesToSend =
-    // allWorkouts.map(
-    //     (workout) => (
-    //         {
-    //             id: workout._id,
-    //             date: workout.date_formatted
-    //         }
-    //     )
-    // )
-    // console.log(JSON.stringify(allWorkoutsIDsAndDatesToSend));
     res.json(allWorkouts);
 })
 
@@ -223,51 +198,75 @@ exports.workout_view_get = asyncHandler(async(req, res) => {
 
 // handle a new workout create on POST.
 exports.workout_create_post = [
-    // validate input
-    // removing this for now
-    // body("exerciseList.*.setLog.*.*")
-    // .trim()
-    // .isNumeric(),
+    // validate and sanitize input
+    body("exerciseList.*.setLog.*.weight", "Weight must be a number")
+        .trim()
+        .isNumeric()
+        .isLength({ min: 1, max: 6 })
+        .escape(),
+    body("exerciseList.*.setLog.*.sets", "Sets must be a whole positive number")
+        .trim()
+        .isInt({ min: 1 })
+        .isLength({ min: 1, max: 6 })
+        .escape(),
+    body("exerciseList.*.setLog.*.reps", "Reps must be a whole positive number")
+        .trim()
+        .isInt({ min: 1 })
+        .isLength({ min: 1, max: 6 })
+        .escape(),
     // process request after validation
     asyncHandler(async (req, res) => {
-        const errors = false;
-        // const errors = validationResult(req);
-        // create a list of SingleExercises: that's our
-        // exerciseList.
-        const exerciseObjectList = (req.body.exerciseList).map(
-            (exerciseLog) => new SingleExercise({
-              exerciseName: exerciseLog.exerciseName,
-              setLog: exerciseLog.setLog,
-            }));
-        // create my WorkoutLog
-        // we should add date here, not receive it from front!
-        const workoutLog = new WorkoutLog({
-            // date: req.body.date,
-            user_id: req.body.user_id,
-            exerciseList: exerciseObjectList,
-        });
-
-        console.log(JSON.stringify(exerciseObjectList));
-        console.log("logging my new workout Log... ")
-        console.log(JSON.stringify(workoutLog));
-        
-        const workoutID = workoutLog._id;
-
-        if (errors) {
-            // todo
-            console.log("errors in creating workoutLog")
-            console.log(JSON.stringify(errors))
-            return;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            console.log("errors array from backend ^^");
+            const errorArray = errors.array();
+            const uniqueErrorMessages = [...new Set(errorArray.map(error => error.msg))];
+            console.log(uniqueErrorMessages)
+            return res.status(400).json({
+                success: false,
+                message: 'Validation errors',
+                validationErrors: uniqueErrorMessages,
+            });
         } else {
+            try {
+            // no errors in input, can save to database :)
+            const exerciseObjectList = (req.body.exerciseList).map(
+                (exerciseLog) => new SingleExercise({
+                exerciseName: exerciseLog.exerciseName,
+                setLog: exerciseLog.setLog,
+                }));
+            // create my WorkoutLog
+            // we should add date here, not receive it from front!
+            const workoutLog = new WorkoutLog({
+                // date: req.body.date,
+                user_id: req.body.user_id,
+                exerciseList: exerciseObjectList,
+            });
+
+            console.log(JSON.stringify(exerciseObjectList));
+            console.log("logging my new workout Log... ")
+            console.log(JSON.stringify(workoutLog));
+            
+            const workoutID = workoutLog._id;
+
             // save exercise logs
             await SingleExercise.insertMany(exerciseObjectList);
             // save workout log
             await WorkoutLog.create(workoutLog);
-            // check that they've been saved, maybe?..
-            // redirect, todo
-            // send id of created workoutlog :)
             console.log(JSON.stringify(workoutID));
-            res.send(JSON.stringify(workoutID));
+
+            res.status(200).json({
+                success: true,
+                message: 'Workout saved successfully',
+            });
+        } catch (error) {
+            // error saving to database ~ DB problem
+            console.error('Error saving workout:', error);
+            res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
         }
-    }),
+        }
+        }),
 ];

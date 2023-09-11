@@ -94,8 +94,9 @@ function WorkoutLog(props) {
     const handleSubmit = async (e) => {
         let hasErrors = false;
         let partiallyFilled = false;
+        // DB detected errors in submission
         e.preventDefault();
-        // first, check that there are no errors in input
+        // REMOVING FOR TESTING
         for (const exercise of currentExerciseList) {
             for (const set of exercise.setLog) {
               if (set.inputErrors) {
@@ -111,6 +112,8 @@ function WorkoutLog(props) {
               }
             }
           }
+        // REMOVING FOR TESTING - END
+        
         // TODO check for empty fields -> I need to check because
         // I'll do calculations for PRs and Hall of Fame later
         // if there's a partially filled singleSet, set message
@@ -124,21 +127,6 @@ function WorkoutLog(props) {
                 setErrorMessage('At least one the sets is partially filled. Please fill or remove the set.')
             }
         } else {
-            // if the SingleExercise exists, I want to send its
-            // id back to the server. If it doesn't and
-            // was added, I have to generate a new ExerciseLog
-            // for it on my backend.
-            // const exerciseListToSend = currentExerciseList.map(
-            //     (exercise) => {
-            //         return {
-            //             isNew: exercise.isNew,
-            //             id: exercise.id, // if exercise not new, then
-            //             // this id is from DB. else, we ignore it.
-            //             exerciseName: exercise.exerciseName,
-            //             setLog: exercise.setLog,
-            //         }
-            //     }
-            // )
             const exerciseListToSend = currentExerciseList.map((exercise) => {
                 const filteredSetLog = exercise.setLog.filter((singleSet) => {
                     return (
@@ -163,8 +151,15 @@ function WorkoutLog(props) {
             }
             // workout submit or workout update
             if (props.workoutLogIsNew) {
-                alert("saving new workout!")
+                const submissionResult =
                 await props.handleWorkoutSubmit(workoutLogToSend);
+                // check if success?
+                if (!submissionResult.success) {
+                    // problem with saving!
+                    if (submissionResult.status === 400) {
+                        setErrorMessage(submissionResult.errorData.join(',\n'));
+                    }
+                }
             } else {
                 // updating existing workout
                 await props.handleWorkoutUpdate(props.id, workoutLogToSend);
