@@ -93,9 +93,9 @@ function WorkoutLog(props) {
 
     const handleSubmit = async (e) => {
         let hasErrors = false;
+        let partiallyFilled = false;
         e.preventDefault();
         // first, check that there are no errors in input
-        // and then check that no fields were left empty.
         for (const exercise of currentExerciseList) {
             for (const set of exercise.setLog) {
               if (set.inputErrors) {
@@ -103,29 +103,60 @@ function WorkoutLog(props) {
                 hasErrors = true;
                 break;
               }
+              if ([set.weight, set.sets, set.reps].filter(Boolean).length > 0
+              && [set.weight, set.sets, set.reps].filter(Boolean).length < 3) {
+                // if some fields are filled but not all
+                partiallyFilled = true;
+                break;
+              }
             }
           }
         // TODO check for empty fields -> I need to check because
         // I'll do calculations for PRs and Hall of Fame later
-        if (hasErrors) {
-            setErrorMessage(
-                'There are errors in the input. Please fix them before submitting.')
+        // if there's a partially filled singleSet, set message
+        // to user.
+        if (hasErrors || partiallyFilled) {
+            if (hasErrors) {
+                setErrorMessage(
+                    'There are errors in the input. Please fix them before submitting.')
+            }
+            if (partiallyFilled) {
+                setErrorMessage('At least one the sets is partially filled. Please fill or remove the set.')
+            }
         } else {
             // if the SingleExercise exists, I want to send its
             // id back to the server. If it doesn't and
             // was added, I have to generate a new ExerciseLog
             // for it on my backend.
-            const exerciseListToSend = currentExerciseList.map(
-                (exercise) => {
-                    return {
-                        isNew: exercise.isNew,
-                        id: exercise.id, // if exercise not new, then
-                        // this id is from DB. else, we ignore it.
-                        exerciseName: exercise.exerciseName,
-                        setLog: exercise.setLog,
-                    }
-                }
-            )
+            // const exerciseListToSend = currentExerciseList.map(
+            //     (exercise) => {
+            //         return {
+            //             isNew: exercise.isNew,
+            //             id: exercise.id, // if exercise not new, then
+            //             // this id is from DB. else, we ignore it.
+            //             exerciseName: exercise.exerciseName,
+            //             setLog: exercise.setLog,
+            //         }
+            //     }
+            // )
+            const exerciseListToSend = currentExerciseList.map((exercise) => {
+                const filteredSetLog = exercise.setLog.filter((singleSet) => {
+                    return (
+                        singleSet.weight !== null
+                    );
+                    // checking just for weight because I checked
+                    // for partially filled set earlier.
+                });
+            
+                return {
+                    isNew: exercise.isNew,
+                    id: exercise.id, // if exercise not new, then
+                    // this id is from DB. else, we ignore it.
+                    exerciseName: exercise.exerciseName,
+                    setLog: filteredSetLog,
+                };
+            });
+
             const workoutLogToSend = {
                 user_id: 0,
                 exerciseList: exerciseListToSend,
