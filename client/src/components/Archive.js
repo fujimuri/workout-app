@@ -13,17 +13,6 @@ function Archive(props) {
 
     const [workoutList, setWorkoutList] = useState([]);
 
-    // fetch data from backend/archive
-    // should fetch again after saving an edited workout as well
-    // useEffect(() => {
-    //     fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`).then(
-    //     response => response.json()
-    //     ).then(
-    //     data => setBackendData(data)
-    //     )
-    // }, [exerciseName, dateRange, showWorkoutsWithPRs,
-    //     props.workoutDeletedCount]);
-
     useEffect(() => {
         fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`)
             .then(response => response.json())
@@ -108,6 +97,12 @@ function Archive(props) {
         setDateRange(e.target.value);
     }
 
+    // <div className="filter-group">
+    //     <input type="checkbox" id="prCheckbox"
+    //          name="prCheckbox"/>
+    //     <label htmlFor="prCheckbox">Include Workouts with Personal Records (PRs) within the selected time period</label>
+    // </div>
+
     return (
         <div>
             <div className="workout-filters">
@@ -139,13 +134,7 @@ function Archive(props) {
                     <option value="all-time">All Time</option>
                     </select>
                 </div>
-
-                <div className="filter-group">
-                    <input type="checkbox" id="prCheckbox"
-                            name="prCheckbox"/>
-                    <label htmlFor="prCheckbox">Include Workouts with Personal Records (PRs) within the selected time period</label>
-                </div>
-                </div>
+            </div>
             <ul>
                 {workoutList.map((workout) =>
                 <li key={workout.workoutID}>
