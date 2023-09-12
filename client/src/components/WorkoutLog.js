@@ -96,7 +96,6 @@ function WorkoutLog(props) {
         let partiallyFilled = false;
         // DB detected errors in submission
         e.preventDefault();
-        // REMOVING FOR TESTING
         for (const exercise of currentExerciseList) {
             for (const set of exercise.setLog) {
               if (set.inputErrors) {
@@ -112,12 +111,7 @@ function WorkoutLog(props) {
               }
             }
           }
-        // REMOVING FOR TESTING - END
-
-        // TODO check for empty fields -> I need to check because
-        // I'll do calculations for PRs and Hall of Fame later
-        // if there's a partially filled singleSet, set message
-        // to user.
+        
         if (hasErrors || partiallyFilled) {
             if (hasErrors) {
                 setErrorMessage(
@@ -149,6 +143,7 @@ function WorkoutLog(props) {
                 user_id: 0,
                 exerciseList: exerciseListToSend,
             }
+
             // workout submit or workout update
             if (props.workoutLogIsNew) {
                 const submissionResult =
@@ -167,9 +162,23 @@ function WorkoutLog(props) {
                 }
             } else {
                 // updating existing workout
+                const submissionResult =
                 await props.handleWorkoutUpdate(props.id, workoutLogToSend);
-                // tell Archive this WorkoutLog was submitted
-                props.finishWorkoutEditing(props.id, workoutLogToSend);
+                // check if success?
+                if (!submissionResult.success) {
+                    // problem with saving!
+                    if (submissionResult.status === 400) {
+                        setErrorMessage(submissionResult.errorData.join(',\n'));
+                    }
+                    if (submissionResult.status === 500) {
+                        setErrorMessage(
+                            'An internal server error occurred while processing your request. Please try again later.'
+                        )
+                    }
+                } else {
+                    // tell Archive this WorkoutLog was submitted
+                    props.finishWorkoutEditing(props.id, workoutLogToSend);
+                }
             }
         }
     }

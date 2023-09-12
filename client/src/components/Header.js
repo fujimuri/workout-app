@@ -20,13 +20,12 @@ function Header(props) {
         },
         {
             urlName: 'Personal Bests',
-            url: 'http://localhost:3000/workouts'
+            url: 'http://localhost:3000/workouts/personal-bests'
         },
         {
             urlName: 'Hall of Fame',
-            url: 'http://localhost:3000/workouts'
+            url: 'http://localhost:3000/workouts/hall-of-fame'
         },
-        
     ]
 
     return (

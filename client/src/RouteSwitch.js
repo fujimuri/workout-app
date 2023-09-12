@@ -36,8 +36,18 @@ const RouteSwitch = () => {
                 <Route
                 path="/workouts"
                 element={<App
-                pageName="Previous Workouts"
+                        pageName="Previous Workouts"
                         />}/>
+                <Route
+                path="/workouts/personal-bests"
+                        element={<App
+                        pageName="Personal Bests"/>}
+                />
+                <Route
+                path="/workouts/hall-of-fame"
+                        element={<App
+                        pageName="Hall of Fame"/>}
+                />
             </Routes>
         </BrowserRouter>
     )

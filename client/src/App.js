@@ -85,50 +85,56 @@ function App(props) {
         }
     } catch (error) {
         // Handle any network or other errors
+        return {
+          success: false,
+          status: 500,
+        }
         console.error('Error saving workout:', error);
     }
   }
-  // };
-  // // handle submit of a new workout :)
-  // const handleWorkoutSubmit = async (workoutLog) => {
-  //   try {
-  //       const response = await fetch('http://localhost:5000/new', {
-  //           method: 'POST',
-  //           body: JSON.stringify(workoutLog),
-  //           headers: {
-  //               'Content-Type': 'application/json'
-  //           }
-  //       });
-  //       if (response.ok) {
-  //         const responseData = await response.json();
-  //         if (responseData.success) {
-  //           navigate('/workouts');
-  //       } else {
-  //         // check if it's inputErrors or database problem
-  //           console.error('Failed to save workout:', response.statusText);
-  //       }
-  //   } catch (error) {
-  //       // Handle any network or other errors
-  //       console.error('Error saving workout:', error);
-  //   }
-  // }};
 
-  const handleWorkoutUpdate = async (workoutID, workoutLog) => {
-    await fetch(`http://localhost:5000/workouts/${workoutID}/update`, {
-      method: 'POST',
-      body: JSON.stringify(workoutLog),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(
-      response => {
+  // handle update of existing workout :)
+const handleWorkoutUpdate = async (workoutID, workoutLog) => {
+  try {
+      const response = await fetch(`http://localhost:5000/workouts/${workoutID}/update`, {
+          method: 'POST',
+          body: JSON.stringify(workoutLog),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+      
       if (response.ok) {
-        return true
+          return {
+              success: true,
+          };
+      } else if (response.status === 400) {
+          // Validation errors
+          console.error('Bad Request: There was a problem with the request data.');
+          const responseData = await response.json();
+          return {
+              success: false,
+              status: 400,
+              errorData: responseData.validationErrors,
+          };
+      } else if (response.status === 500) {
+          // Handle Internal Server Error (status code 500)
+          console.error('Internal Server Error: There was a problem on the server.');
+          const responseData = await response.json();
+          console.error('Response Data:', responseData);
+          return {
+              success: false,
+              status: 500,
+          };
       } else {
-        throw new Error('Request failed'); // Handle the error case
+          // Handle unexpected errors (status codes other than 400, 500, and not OK)
+          console.error('Failed to update workout:', response.statusText);
       }
-    })
+  } catch (error) {
+      // Handle any network or other errors
+      console.error('Error updating workout:', error);
   }
+}
 
   const handleWorkoutDeletion = async (workoutID) => {
     await fetch(`http://localhost:5000/workouts/${workoutID}/delete`, {
@@ -150,26 +156,44 @@ function App(props) {
   return (
     <div>
       <Header pageName={props.pageName}/>
-      {
-        props.pageName === "Previous Workouts" ? (
-          <Archive
-          isEditing={false}
-          isPrefilled={true}
-          handleWorkoutSubmit={handleWorkoutSubmit}
-          handleWorkoutUpdate={handleWorkoutUpdate}
-          handleWorkoutDeletion={handleWorkoutDeletion}
-          workoutDeletedCount={workoutDeletedCount}/>
-        ) : (
-          <WorkoutLog
-          workoutLogIsNew={true}
-          isEditing={isEditing}
-          isPrefilled={isPrefilled}
-          data={backendData}
-          handleWorkoutSubmit={handleWorkoutSubmit}
-          handleWorkoutDeletion={handleWorkoutDeletion}
+      {(() => {
+        switch (props.pageName) {
+          case "New Workout":
+            return (
+            <WorkoutLog
+            workoutLogIsNew={true}
+            isEditing={isEditing}
+            isPrefilled={isPrefilled}
+            data={backendData}
+            handleWorkoutSubmit={handleWorkoutSubmit}
+            handleWorkoutDeletion={handleWorkoutDeletion}
           />
-        )
-      }
+          );
+          case "Previous Workouts":
+            return (
+              <Archive
+                isEditing={false}
+                isPrefilled={true}
+                handleWorkoutSubmit={handleWorkoutSubmit}
+                handleWorkoutUpdate={handleWorkoutUpdate}
+                handleWorkoutDeletion={handleWorkoutDeletion}
+                workoutDeletedCount={workoutDeletedCount}
+              />
+            );
+            case "Personal Bests":
+              return (
+                <div>
+                  This page is under construction. Visit back soon 🌸
+                </div>
+            );
+            case "Hall of Fame":
+              return (
+                <div>
+                  This page is under construction. Visit back soon 🌸
+                </div>
+              )
+        }
+      })()}
     </div>
   );
 }
