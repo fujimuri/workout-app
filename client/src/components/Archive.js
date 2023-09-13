@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import WorkoutLog from './WorkoutLog';
 
 function Archive(props) {
     
     const [exerciseName, setExerciseName] = useState('');
     const [dateRange, setDateRange] = useState('');
-    const [showWorkoutsWithPRs, setShowWorkoutsWithPRs] = useState(false);
+    // const [showWorkoutsWithPRs, setShowWorkoutsWithPRs] = useState(false);
 
     // get list of workouts from backend with optional filter
     const [backendData, setBackendData] = useState([]);
@@ -14,7 +13,7 @@ function Archive(props) {
     const [workoutList, setWorkoutList] = useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}&contains_pr=${showWorkoutsWithPRs}`)
+        fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`)
             .then(response => response.json())
             .then(data => {
             // Modify the fetched data to include 'inputError' field
@@ -28,11 +27,9 @@ function Archive(props) {
                 })),
                 })),
             }));
-        
             setBackendData(modifiedData);
-            console.log(modifiedData)
             });
-        }, [exerciseName, dateRange, showWorkoutsWithPRs, props.workoutDeletedCount]);
+        }, [exerciseName, dateRange, props.workoutDeletedCount]);
 
     // a second useEffect to update my workoutList correctly
     useEffect(() => {

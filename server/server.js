@@ -11,7 +11,6 @@ require('./controllers/workoutController');
 // connect to database
 const dotenv = require("dotenv").config();
 const mongoDB = process.env.MONGODB;
-console.log(mongoDB);
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 

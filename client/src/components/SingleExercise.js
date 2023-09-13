@@ -30,8 +30,7 @@ function SingleExercise(props) {
         if (props.isPrefilled) {
             setSetList(props.setLog);
         }
-    }, [currentSetList]);
-    // }, []);
+    }, [props.isPrefilled, props.setLog]);
 
     // handle deletion of set with id
     function handleSetDeletion(idToDelete) {
@@ -108,7 +107,6 @@ function SingleExercise(props) {
             <option value="Overhead Press"> Overhead Press </option>
             <option value="Deadlift"> Deadlift </option>
             <option value="Power Clean"> Power Clean </option>
-            <option value="Add Your Own"> Add Your Own </option>
             </select>
             <button
             className="btn delete-exercise-btn"

@@ -81,13 +81,11 @@ exports.workouts_get = asyncHandler(async(req, res) => {
             exerciseList: modifiedExerciseList,
         };
     });
-    console.log(modifiedWorkoutLogs);
     res.json(modifiedWorkoutLogs);
 });
 
 exports.workout_delete_post = asyncHandler(async(req, res) => {
     const workoutID = req.params.id;
-    console.log("deleting workout with id " + workoutID);
     try {
         // Find the workout by ID and remove it
         const deletedWorkout = await WorkoutLog.findByIdAndRemove(workoutID);
@@ -125,16 +123,11 @@ exports.workout_update_post = [
         .escape(),
 
     asyncHandler(async (req, res) => {
-        console.log("updating workout...");
-        console.log(JSON.stringify(req.body.exerciseList));
-
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                console.log("Validation errors from backend ^^");
                 const errorArray = errors.array();
                 const uniqueErrorMessages = [...new Set(errorArray.map(error => error.msg))];
-                console.log(uniqueErrorMessages);
                 return res.status(400).json({
                     success: false,
                     message: 'Validation errors',
@@ -148,8 +141,6 @@ exports.workout_update_post = [
             const updatedExerciseIDs = [];
         
             for (const exercise of exerciseList) {
-                console.log("the set log of the current exercise is:");
-                console.log(JSON.stringify(exercise.setLog));
                 if (exercise.isNew) {
                     // Create a new SingleExercise object with the exercise data
                     const newExercise = new SingleExercise({
@@ -184,9 +175,6 @@ exports.workout_update_post = [
                 }
             }
 
-            console.log("These are the updated exercise IDs");
-            console.log(JSON.stringify(updatedExerciseIDs));
-        
             // update workoutLog with updated exerciseIDs ^^
             await WorkoutLog.findByIdAndUpdate(workoutID, {
                 exerciseList: updatedExerciseIDs,
@@ -194,9 +182,6 @@ exports.workout_update_post = [
 
             // check if update successful
             const updatedWorkout = await WorkoutLog.findById(workoutID);
-
-            console.log("Saved WorkoutLog is "
-            + JSON.stringify(updatedWorkout));
 
             res.status(200).json({
                 success: true,
@@ -256,18 +241,12 @@ exports.workout_create_post = [
         .escape(),
     // process request after validation
     asyncHandler(async (req, res) => {
-        console.log("here is my exerciseList body")
-        console.log(JSON.stringify(req.body.exerciseList))
         const errors = validationResult(req);
         const errorArray = errors.array();
         const printErrors = [...new Set(errorArray.map(error => error.msg))];
-        console.log("here are my validation errors")
-        console.log(JSON.stringify(printErrors))
         if (!errors.isEmpty()) {
-            console.log("errors array from backend ^^");
             const errorArray = errors.array();
             const uniqueErrorMessages = [...new Set(errorArray.map(error => error.msg))];
-            console.log(uniqueErrorMessages)
             return res.status(400).json({
                 success: false,
                 message: 'Validation errors',
@@ -295,7 +274,6 @@ exports.workout_create_post = [
             await SingleExercise.insertMany(exerciseObjectList);
             // save workout log
             await WorkoutLog.create(workoutLog);
-            console.log(JSON.stringify(workoutID));
 
             res.status(200).json({
                 success: true,

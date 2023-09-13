@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import WorkoutLog from './components/WorkoutLog'
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import Header from './components/Header';
 import Archive from './components/Archive';
 
@@ -12,36 +11,33 @@ function App(props) {
 
   const isEditing = props.isEditing;
   const isPrefilled = props.isPrefilled;
-  console.log("isEditing is " + isEditing);
-  console.log("isPrefilled is " + isPrefilled);
 
   // id of workout that we get from url workouts/:id
-  const { id } = useParams();
+  // const { id } = useParams();
 
-  const [backendData, setBackendData] = useState([{}]);
+  // const [backendData, setBackendData] = useState([{}]);
 
-  useEffect(() => {
-    if (isPrefilled) {
-      console.log("fetching data for workout log!");
-      fetch(`http://localhost:5000/workouts/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          // Iterate through the fetched data and add inputErrors: false
-          const dataWithInputErrors = data.map((workout) => ({
-            ...workout,
-            exerciseList: workout.exerciseList.map((exercise) => ({
-              ...exercise,
-              setLog: exercise.setLog.map((set) => ({
-                ...set,
-                inputErrors: false,
-              })),
-            })),
-          }));
+  // useEffect(() => {
+  //   if (isPrefilled) {
+  //     fetch(`http://localhost:5000/workouts/${id}`)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         // Iterate through the fetched data and add inputErrors: false
+  //         const dataWithInputErrors = data.map((workout) => ({
+  //           ...workout,
+  //           exerciseList: workout.exerciseList.map((exercise) => ({
+  //             ...exercise,
+  //             setLog: exercise.setLog.map((set) => ({
+  //               ...set,
+  //               inputErrors: false,
+  //             })),
+  //           })),
+  //         }));
           
-          setBackendData(dataWithInputErrors);
-        });
-    }
-  }, [isEditing, setBackendData]);
+  //         setBackendData(dataWithInputErrors);
+  //       });
+  //   }
+  // }, [isEditing, setBackendData]);
 
   // deleted workouts state counter
   const [workoutDeletedCount, setWorkoutDeletedCount] = useState(0);
@@ -85,11 +81,11 @@ function App(props) {
         }
     } catch (error) {
         // Handle any network or other errors
+        console.error('Error saving workout:', error);
         return {
           success: false,
           status: 500,
         }
-        console.error('Error saving workout:', error);
     }
   }
 
@@ -164,7 +160,6 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
             workoutLogIsNew={true}
             isEditing={isEditing}
             isPrefilled={isPrefilled}
-            data={backendData}
             handleWorkoutSubmit={handleWorkoutSubmit}
             handleWorkoutDeletion={handleWorkoutDeletion}
           />
@@ -191,7 +186,13 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
                 <div>
                   This page is under construction. Visit back soon 🌸
                 </div>
-              )
+            );
+            default:
+              return (
+                <div>
+                  Welcome to the website 🌸
+                </div>
+          );
         }
       })()}
     </div>
