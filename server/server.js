@@ -4,6 +4,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const cors = require('cors');
 app.use(cors());
+const helmet = require('helmet');
+// rate limiter
+const RateLimit = require("express-rate-limit");
+// limit all requests to 20 per minute.
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 // controller
 const workout_controller =
 require('./controllers/workoutController');
@@ -13,6 +23,14 @@ const dotenv = require("dotenv").config();
 const mongoDB = process.env.MONGODB;
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+    },
+  }),
+);
 
 main().catch((err) => console.log(err));
 async function main() {
