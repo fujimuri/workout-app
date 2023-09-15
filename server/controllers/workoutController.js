@@ -241,6 +241,8 @@ exports.workout_create_post = [
         .escape(),
     // process request after validation
     asyncHandler(async (req, res) => {
+        console.log("this is req.body")
+        console.log(JSON.stringify(req.body))
         const errors = validationResult(req);
         const errorArray = errors.array();
         const printErrors = [...new Set(errorArray.map(error => error.msg))];

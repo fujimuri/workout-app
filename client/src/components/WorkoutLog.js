@@ -122,22 +122,34 @@ function WorkoutLog(props) {
             }
         } else {
             const exerciseListToSend = currentExerciseList.map((exercise) => {
-                const filteredSetLog = exercise.setLog.filter((singleSet) => {
-                    return (
-                        singleSet.weight !== null
-                    );
-                    // checking just for weight because I checked
-                    // for partially filled set earlier.
-                });
-            
+                const filteredSetLog = exercise.setLog
+                  .filter((singleSet) => singleSet.weight !== null) // filter out sets with null weight
+                  .map(({ weight, sets, reps }) => ({ weight, sets, reps })); // include only weight, sets, and reps
+              
                 return {
-                    isNew: exercise.isNew,
-                    id: exercise.id, // if exercise not new, then
-                    // this id is from DB. else, we ignore it.
-                    exerciseName: exercise.exerciseName,
-                    setLog: filteredSetLog,
+                  isNew: exercise.isNew,
+                  id: exercise.id, // if exercise not new, then this id is from DB. else, we ignore it.
+                  exerciseName: exercise.exerciseName,
+                  setLog: filteredSetLog,
                 };
-            });
+              });
+            // const exerciseListToSend = currentExerciseList.map((exercise) => {
+            //     const filteredSetLog = exercise.setLog.filter((singleSet) => {
+            //         return (
+            //             singleSet.weight !== null
+            //         );
+            //         // checking just for weight because I checked
+            //         // for partially filled set earlier.
+            //     });
+            
+            //     return {
+            //         isNew: exercise.isNew,
+            //         id: exercise.id, // if exercise not new, then
+            //         // this id is from DB. else, we ignore it.
+            //         exerciseName: exercise.exerciseName,
+            //         setLog: filteredSetLog,
+            //     };
+            // });
 
             const workoutLogToSend = {
                 user_id: 0,

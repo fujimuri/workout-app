@@ -14,7 +14,6 @@ function SingleExercise(props) {
     const initialListOfSets = props.setLog;
 
     const emptySet = {
-        isNew: true,
         id: null,
         weight: null,
         sets: null,
