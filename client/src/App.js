@@ -12,32 +12,7 @@ function App(props) {
   const isEditing = props.isEditing;
   const isPrefilled = props.isPrefilled;
 
-  // id of workout that we get from url workouts/:id
-  // const { id } = useParams();
-
-  // const [backendData, setBackendData] = useState([{}]);
-
-  // useEffect(() => {
-  //   if (isPrefilled) {
-  //     fetch(`http://localhost:5000/workouts/${id}`)
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         // Iterate through the fetched data and add inputErrors: false
-  //         const dataWithInputErrors = data.map((workout) => ({
-  //           ...workout,
-  //           exerciseList: workout.exerciseList.map((exercise) => ({
-  //             ...exercise,
-  //             setLog: exercise.setLog.map((set) => ({
-  //               ...set,
-  //               inputErrors: false,
-  //             })),
-  //           })),
-  //         }));
-          
-  //         setBackendData(dataWithInputErrors);
-  //       });
-  //   }
-  // }, [isEditing, setBackendData]);
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   // deleted workouts state counter
   const [workoutDeletedCount, setWorkoutDeletedCount] = useState(0);
@@ -45,7 +20,7 @@ function App(props) {
   // handle submit of a new workout :)
   const handleWorkoutSubmit = async (workoutLog) => {
     try {
-        const response = await fetch('http://localhost:5000/new', {
+        const response = await fetch(`${backendUrl}/new`, {
             method: 'POST',
             body: JSON.stringify(workoutLog),
             headers: {
@@ -92,7 +67,7 @@ function App(props) {
   // handle update of existing workout :)
 const handleWorkoutUpdate = async (workoutID, workoutLog) => {
   try {
-      const response = await fetch(`http://localhost:5000/workouts/${workoutID}/update`, {
+      const response = await fetch(`${backendUrl}/workouts/${workoutID}/update`, {
           method: 'POST',
           body: JSON.stringify(workoutLog),
           headers: {
@@ -133,7 +108,7 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
 }
 
   const handleWorkoutDeletion = async (workoutID) => {
-    await fetch(`http://localhost:5000/workouts/${workoutID}/delete`, {
+    await fetch(`${backendUrl}/workouts/${workoutID}/delete`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

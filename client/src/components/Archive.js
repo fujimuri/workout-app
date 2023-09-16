@@ -12,8 +12,11 @@ function Archive(props) {
 
     const [workoutList, setWorkoutList] = useState([]);
 
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    
+
     useEffect(() => {
-        fetch(`http://localhost:5000/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`)
+        fetch(`${backendUrl}/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`)
             .then(response => response.json())
             .then(data => {
             // Modify the fetched data to include 'inputError' field
