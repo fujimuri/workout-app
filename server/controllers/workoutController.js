@@ -57,6 +57,8 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     .sort({ date: -1 })
     .exec();
 
+    console.log("pulled workout logs from DB" + JSON.stringify(workoutLogs))
+
     const modifiedWorkoutLogs = workoutLogs.map((workout) => {
         const modifiedExerciseList = workout.exerciseList.map((singleExercise) => {
             const modifiedSetLog = singleExercise.setLog.map((set) => ({
@@ -281,12 +283,12 @@ exports.workout_create_post = [
             });
         } catch (error) {
             // error saving to database ~ DB problem
-            success: false,
             console.error('Error saving workout:', error);
             res.status(500).json({
-            message: 'Internal server error',
-        });
-        }
+              success: false, // Add this line to indicate the operation was not successful
+              message: 'Internal server error',
+            });
+          }
         }
         }),
 ];

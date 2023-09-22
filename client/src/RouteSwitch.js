@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
+import Login from './components/Login'
 
 const RouteSwitch = () => {
     return (
@@ -47,6 +48,9 @@ const RouteSwitch = () => {
                         element={<App
                         pageName="Hall of Fame"/>}
                 />
+                <Route
+                path="/login"
+                element={<Login/>}/>
             </Routes>
         </BrowserRouter>
     )
