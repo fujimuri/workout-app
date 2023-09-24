@@ -55,3 +55,55 @@
     background-color: lightgrey;
     color: white;
 }
+
+/* login form style */
+
+.login-text {
+    text-align: center;
+}
+
+.login-form {
+    background-color: #fff; /* Change to your desired background color */
+    border-radius: 10px; /* Increase border-radius for rounded corners */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    padding: 20px; /* Add padding for spacing */
+    max-width: 400px; /* Limit the width of the form */
+    margin: 0 auto; /* Remove margin to align to the left */
+    text-align: center; /* Center text horizontally within the box */
+    background-color: rgb(255, 223, 228);
+  }
+  
+  /* Separate buttons onto different lines */
+  .login-form button {
+    display: inline-block; /* Make buttons block-level elements */
+    margin-top: 10px; /* Add margin to separate buttons */
+    justify-content: space-between; /* Space buttons evenly */
+  }
+  
+  /* Style individual buttons */
+  .login-form button:first-child {
+    margin-right: 10px; /* Add some space between buttons */
+  }
+
+  /* Style the Log In button */
+  .login-btn {
+    background-color: #ebfeee;
+    color: black; /* Customize the text color */
+}
+  
+  /* Style the Sign Up button */
+  .signup-btn {
+    background-color: #ebfeee;
+    color: black; /* Customize the text color */
+}
+
+/* Style the Go Back button with a different color */
+.go-back-btn {
+    background-color: rgb(252, 204, 211);
+    color: black; /* Text color */
+  }
+  
+  /* Add margin between the buttons */
+  .go-back-btn + .logout-btn {
+    margin-left: 10px; /* Adjust the margin as needed */
+  }
