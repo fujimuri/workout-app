@@ -12,33 +12,33 @@ const RouteSwitch = () => {
                 path="/"
                 element={
                         <PrivateRoute
-                        element={<App
-                                isEditing={true}
-                                isPrefilled={false}
-                                pageName="New Workout"/>}/>
+                        isEditing={true}
+                        isPrefilled={false}
+                        pageName="New Workout"
+                        />
                 }/>
                 <Route
                 path="/new"
                 element={
                         <PrivateRoute
-                        element={<App
-                                isEditing={true}
-                                isPrefilled={false}
-                                pageName="New Workout"/>}/>
+                        isEditing={true}
+                        isPrefilled={false}
+                        pageName="New Workout"
+                        />
                 }/>
                 <Route
                 path="/workouts"
                 element={
                         <PrivateRoute
-                        element={<App
-                                pageName="Previous Workouts"/>}/>
+                        pageName="Previous Workouts"
+                        />
                 }/>
                 <Route
                 path="/workouts/personal-bests"
                 element={
                         <PrivateRoute
-                        element={<App
-                                pageName="Personal Bests"/>}/>
+                        pageName="Personal Bests"
+                        />
                 }/>
                 <Route
                 path="/workouts/hall-of-fame"

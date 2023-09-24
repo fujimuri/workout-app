@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import app from '../firebase'; // Import the Firebase app instance
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import App from '../App'
 
-function PrivateRoute({ element }) {
+function PrivateRoute(props) {
 
     const auth = getAuth(app);
 
@@ -34,7 +35,11 @@ function PrivateRoute({ element }) {
     }
 
     return user ? (
-        element
+        <App
+        isEditing={props.isEditing}
+        isPrefilled={props.isPrefilled}
+        pageName={props.pageName}
+        userID={user.uid}/>
       ) : (
         <Navigate to="/login" replace />
       );
