@@ -146,8 +146,6 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
           case "Previous Workouts":
             return (
               <Archive
-                isEditing={false}
-                isPrefilled={true}
                 handleWorkoutSubmit={handleWorkoutSubmit}
                 handleWorkoutUpdate={handleWorkoutUpdate}
                 handleWorkoutDeletion={handleWorkoutDeletion}
