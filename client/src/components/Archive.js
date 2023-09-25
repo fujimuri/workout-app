@@ -14,25 +14,31 @@ function Archive(props) {
 
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     
-
     useEffect(() => {
-        fetch(`${backendUrl}/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`)
-            .then(response => response.json())
-            .then(data => {
+        const user_id = props.userID;
+    
+        fetch(`${backendUrl}/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`, {
+            method: 'GET',
+            headers: {
+                'User-ID': user_id,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
             // Modify the fetched data to include 'inputError' field
             const modifiedData = data.map(workout => ({
                 ...workout,
                 exerciseList: workout.exerciseList.map(exercise => ({
-                ...exercise,
-                setLog: exercise.setLog.map(singleSet => ({
-                    ...singleSet,
-                    inputErrors: false,
-                })),
+                    ...exercise,
+                    setLog: exercise.setLog.map(singleSet => ({
+                        ...singleSet,
+                        inputErrors: false,
+                    })),
                 })),
             }));
             setBackendData(modifiedData);
-            });
-        }, [exerciseName, dateRange, props.workoutDeletedCount]);
+        });
+    }, [exerciseName, dateRange, props.workoutDeletedCount, props.userID]);
 
     // a second useEffect to update my workoutList correctly
     useEffect(() => {
@@ -96,12 +102,6 @@ function Archive(props) {
         e.preventDefault();
         setDateRange(e.target.value);
     }
-
-    // <div className="filter-group">
-    //     <input type="checkbox" id="prCheckbox"
-    //          name="prCheckbox"/>
-    //     <label htmlFor="prCheckbox">Include Workouts with Personal Records (PRs) within the selected time period</label>
-    // </div>
 
     return (
         <div>

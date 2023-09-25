@@ -54,19 +54,16 @@ const DATA = [
     }
   ];
 
-// get archive of all workouts (for now)
-app.get('/archive', workout_controller.workout_archive_get)
-
-app.get('/workouts/:id', workout_controller.workout_view_get)
-
 // POST a new workout
 app.post('/new', workout_controller.workout_create_post);
 
 // update an existing workout in database
 app.post('/workouts/:id/update', workout_controller.workout_update_post);
 
+// get previous workouts, potentially with filters
 app.get('/workouts', workout_controller.workouts_get);
 
+// delete a workout
 app.post('/workouts/:id/delete', workout_controller.workout_delete_post);
 
 app.listen(5000, () =>

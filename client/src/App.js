@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import WorkoutLog from './components/WorkoutLog'
-// import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Archive from './components/Archive';
 
 function App(props) {
+
+  const userID = props.userID;
 
   const navigate = useNavigate();
 
@@ -24,7 +25,8 @@ function App(props) {
             method: 'POST',
             body: JSON.stringify(workoutLog),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-ID' : userID,
             }
         });
         if (response.ok) {
@@ -71,7 +73,8 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
           method: 'POST',
           body: JSON.stringify(workoutLog),
           headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'User-ID' : userID,
           }
       });
       
@@ -111,7 +114,8 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
     await fetch(`${backendUrl}/workouts/${workoutID}/delete`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-ID' : userID,
       }
     }).then(
       response => {
@@ -148,6 +152,7 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
                 handleWorkoutUpdate={handleWorkoutUpdate}
                 handleWorkoutDeletion={handleWorkoutDeletion}
                 workoutDeletedCount={workoutDeletedCount}
+                userID={userID}
               />
             );
             case "Personal Bests":

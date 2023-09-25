@@ -12,7 +12,9 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     const containsPR = req.query.contains_pr === true;
 
     // mongoDB query
-    let query = {};
+    let query = {
+        user_id: req.header('User-ID'),
+    };
 
     // apply name filter
     if (exerciseName && exerciseName !== 'All Exercises') {
@@ -44,20 +46,10 @@ exports.workouts_get = asyncHandler(async(req, res) => {
         }
     }
 
-    // filter based on contains_pr - TODO
-    if (containsPR) {
-        // then only show workoutLogs where there exists a
-        // SingleExercise with max weight relative to the
-        // other SingleExercises with same name in the date
-        // range.
-    }
-
     const workoutLogs = await WorkoutLog.find(query)
     .populate('exerciseList')
     .sort({ date: -1 })
     .exec();
-
-    console.log("pulled workout logs from DB" + JSON.stringify(workoutLogs))
 
     const modifiedWorkoutLogs = workoutLogs.map((workout) => {
         const modifiedExerciseList = workout.exerciseList.map((singleExercise) => {
@@ -199,30 +191,6 @@ exports.workout_update_post = [
     }),
 ];
 
-exports.workout_archive_get = asyncHandler(async(req, res) => {
-    // get all workouts and send their data
-    // in an array. :)
-    const allWorkouts = await WorkoutLog.find({})
-    .sort({ date: -1 })
-    .populate("exerciseList")
-    .exec();
-    res.json(allWorkouts);
-})
-
-// display workout data with given id
-exports.workout_view_get = asyncHandler(async(req, res) => {
-    const workoutData = await WorkoutLog.findById(req.params.id)
-    .populate("exerciseList")
-    // have to go over exerciseList (SingleExercises...)
-    const modifiedExerciseList = workoutData.exerciseList.map((singleExercise) => ({
-        isNew: false,
-        id: singleExercise._id,
-        exerciseName: singleExercise.exerciseName,
-        setLog: singleExercise.setLog,
-    }));
-    res.json(modifiedExerciseList);
-});
-
 // handle a new workout create on POST.
 exports.workout_create_post = [
     // validate and sanitize input
@@ -266,7 +234,7 @@ exports.workout_create_post = [
             // we should add date here, not receive it from front!
             const workoutLog = new WorkoutLog({
                 // date: req.body.date,
-                user_id: req.body.user_id,
+                user_id: req.header('User-ID'),
                 exerciseList: exerciseObjectList,
             });
             
