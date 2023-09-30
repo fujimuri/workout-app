@@ -5,6 +5,8 @@ import Header from './components/Header';
 import Archive from './components/Archive';
 
 function App(props) {
+  // checking token value
+  // alert("from App: token value is " + props.token)
 
   const userID = props.userID;
 
@@ -27,6 +29,7 @@ function App(props) {
             headers: {
                 'Content-Type': 'application/json',
                 'User-ID' : userID,
+                'Authorization': `Bearer ${props.token}`,
             }
         });
         if (response.ok) {
@@ -151,6 +154,7 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
                 handleWorkoutDeletion={handleWorkoutDeletion}
                 workoutDeletedCount={workoutDeletedCount}
                 userID={userID}
+                token={props.token}
               />
             );
             case "Personal Bests":

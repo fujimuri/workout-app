@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import WorkoutLog from './WorkoutLog';
 
 function Archive(props) {
-    
+    // problem: doesn't get the right token.
+    // token comes from App from PrivateRoute.
+    // let's print them all and see what's going on.
+    // alert("from Archive: token value is " + props.token)
+
     const [exerciseName, setExerciseName] = useState('');
     const [dateRange, setDateRange] = useState('');
     // const [showWorkoutsWithPRs, setShowWorkoutsWithPRs] = useState(false);
@@ -21,6 +25,7 @@ function Archive(props) {
             method: 'GET',
             headers: {
                 'User-ID': user_id,
+                'Authorization': `Bearer ${props.token}`,
             },
         })
         .then(response => response.json())
@@ -38,7 +43,7 @@ function Archive(props) {
             }));
             setBackendData(modifiedData);
         });
-    }, [exerciseName, dateRange, props.workoutDeletedCount, props.userID]);
+    }, [exerciseName, dateRange, props.workoutDeletedCount, props.token]);
 
     // a second useEffect to update my workoutList correctly
     useEffect(() => {

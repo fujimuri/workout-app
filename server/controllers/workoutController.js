@@ -1,19 +1,53 @@
+require('dotenv').config(); // Load environment variables from .env file
 const WorkoutLog = require('../models/workoutlog');
 const SingleExercise = require('../models/singleexercise');
 const asyncHandler = require('express-async-handler');
 // validation
 const { body, validationResult } = require('express-validator');
+// firebase
+const admin = require("firebase-admin");
+const accountPath = process.env.FIREBASE_SERVICE_ACCOUNT;
+const serviceAccount = require(accountPath);
+// Initialize the Firebase Admin SDK with the service account key
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+// helper function to verify token and return uid
+async function verifyTokenAndGetUID(idToken) {
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
+    return uid;
+  } catch (error) {
+    console.error("Token Verification Error:", error);
+    throw error; // Rethrow the error to handle it elsewhere if needed
+  }
+}
 
 // handle GET on list of workouts
 exports.workouts_get = asyncHandler(async(req, res) => {
     // filter params
     const exerciseName = req.query.exercise_name;
     const dateRange = req.query.date_range;
-    const containsPR = req.query.contains_pr === true;
+    
+    // get token from req header
+    const idToken = req.headers.authorization;
+    if (!idToken || !idToken.startsWith('Bearer ')) {
+    // If the header is missing or doesn't start with "Bearer", return an error
+    console.error('Invalid authorization header');
+    return res.status(401).json({
+        success: false,
+        error: 'Unauthorized',
+    });
+    }
+    // Extract the token part after "Bearer"
+    const token = idToken.split(' ')[1];
+    const decodedUID = await verifyTokenAndGetUID(token);
 
     // mongoDB query
     let query = {
-        user_id: req.header('User-ID'),
+        user_id: decodedUID
     };
 
     // apply name filter
@@ -211,9 +245,23 @@ exports.workout_create_post = [
         .escape(),
     // process request after validation
     asyncHandler(async (req, res) => {
+        // get token from req header
+        const idToken = req.headers.authorization;
+        if (!idToken || !idToken.startsWith('Bearer ')) {
+        // If the header is missing or doesn't start with "Bearer", return an error
+        console.error('Invalid authorization header');
+        return res.status(401).json({
+            success: false,
+            error: 'Unauthorized',
+        });
+        }
+        // Extract the token part after "Bearer"
+        const token = idToken.split(' ')[1];
+        const decodedUID = await verifyTokenAndGetUID(token);
+        
         const errors = validationResult(req);
-        const errorArray = errors.array();
-        const printErrors = [...new Set(errorArray.map(error => error.msg))];
+        // const errorArray = errors.array();
+        // const printErrors = [...new Set(errorArray.map(error => error.msg))];
         if (!errors.isEmpty()) {
             const errorArray = errors.array();
             const uniqueErrorMessages = [...new Set(errorArray.map(error => error.msg))];
@@ -223,8 +271,8 @@ exports.workout_create_post = [
                 validationErrors: uniqueErrorMessages,
             });
         } else {
+            // no errors in input, can save to database :)            
             try {
-            // no errors in input, can save to database :)
             const exerciseObjectList = (req.body.exerciseList).map(
                 (exerciseLog) => new SingleExercise({
                 exerciseName: exerciseLog.exerciseName,
@@ -234,7 +282,7 @@ exports.workout_create_post = [
             // we should add date here, not receive it from front!
             const workoutLog = new WorkoutLog({
                 // date: req.body.date,
-                user_id: req.header('User-ID'),
+                user_id: decodedUID,
                 exerciseList: exerciseObjectList,
             });
             
@@ -253,7 +301,7 @@ exports.workout_create_post = [
             // error saving to database ~ DB problem
             console.error('Error saving workout:', error);
             res.status(500).json({
-              success: false, // Add this line to indicate the operation was not successful
+              success: false,
               message: 'Internal server error',
             });
           }
