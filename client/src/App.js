@@ -6,7 +6,7 @@ import Archive from './components/Archive';
 
 function App(props) {
   // checking token value
-  // alert("from App: token value is " + props.token)
+  alert("from App: token value is " + props.token)
 
   const userID = props.userID;
 
@@ -22,6 +22,10 @@ function App(props) {
 
   // handle submit of a new workout :)
   const handleWorkoutSubmit = async (workoutLog) => {
+    if (!props.token) {
+      return;
+    }
+
     try {
         const response = await fetch(`${backendUrl}/new`, {
             method: 'POST',
@@ -114,11 +118,15 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
 }
 
   const handleWorkoutDeletion = async (workoutID) => {
+    if (!props.token) {
+      return;
+    }
     await fetch(`${backendUrl}/workouts/${workoutID}/delete`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'User-ID' : userID,
+        'Authorization': `Bearer ${props.token}`,
       }
     }).then(
       response => {

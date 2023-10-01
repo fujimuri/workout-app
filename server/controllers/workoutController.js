@@ -112,25 +112,52 @@ exports.workouts_get = asyncHandler(async(req, res) => {
     res.json(modifiedWorkoutLogs);
 });
 
-exports.workout_delete_post = asyncHandler(async(req, res) => {
+exports.workout_delete_post = asyncHandler(async (req, res) => {
     const workoutID = req.params.id;
-    try {
-        // Find the workout by ID and remove it
-        const deletedWorkout = await WorkoutLog.findByIdAndRemove(workoutID);
-
-        if (!deletedWorkout) {
-            // If the workout with the given ID is not found, return an error
-            return res.status(404).send("Workout not found");
-        }
-
-        // Successfully deleted the workout
-        res.status(200).send("Workout deleted successfully");
-    } catch (error) {
-        // Handle any errors that occur during the deletion process
-        console.error("Error deleting workout:", error);
-        res.status(500).send("Error deleting workout");
+    // get token and get uid from it
+    const idToken = req.headers.authorization;
+    if (!idToken || !idToken.startsWith('Bearer ')) {
+      console.error('Invalid authorization header');
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized',
+      });
     }
-});
+    // Extract the token part after "Bearer"
+    const token = idToken.split(' ')[1];
+    const decodedUID = await verifyTokenAndGetUID(token);
+  
+    try {
+      // Find the workout by ID
+      const workout = await WorkoutLog.findById(workoutID);
+  
+      if (!workout) {
+        // If the workout with the given ID is not found, return an error
+        return res.status(404).send('Workout not found');
+      }
+  
+      // Check if the UID from the token matches the UID associated with the workout
+      if (decodedUID !== workout.user_id) {
+        // If they don't match, return an error indicating unauthorized access
+        return res.status(403).send('Unauthorized access');
+      }
+  
+      // If the UIDs match, proceed with deleting the workout
+      const deletedWorkout = await WorkoutLog.findByIdAndRemove(workoutID);
+  
+      if (!deletedWorkout) {
+        // If the workout was not deleted successfully for some reason, return an error
+        return res.status(500).send('Error deleting workout');
+      }
+  
+      // Successfully deleted the workout
+      res.status(200).send('Workout deleted successfully');
+    } catch (error) {
+      // Handle any errors that occur during the deletion process
+      console.error('Error deleting workout:', error);
+      res.status(500).send('Error deleting workout');
+    }
+  });
 
 exports.workout_update_post = [
     // validate and sanitize fields

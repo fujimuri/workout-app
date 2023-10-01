@@ -5,7 +5,7 @@ function Archive(props) {
     // problem: doesn't get the right token.
     // token comes from App from PrivateRoute.
     // let's print them all and see what's going on.
-    // alert("from Archive: token value is " + props.token)
+    alert("from Archive: token value is " + props.token)
 
     const [exerciseName, setExerciseName] = useState('');
     const [dateRange, setDateRange] = useState('');
@@ -19,6 +19,11 @@ function Archive(props) {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     
     useEffect(() => {
+        // check if token exists. If not, do not fetch.
+        if (!props.token) {
+            return;
+        }
+        
         const user_id = props.userID;
     
         fetch(`${backendUrl}/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`, {

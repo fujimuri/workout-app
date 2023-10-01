@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import App from '../App'
 
 function PrivateRoute(props) {
-
+    // debugging token
     const auth = getAuth(app);
 
     const [user, setUser] = useState(null);
@@ -16,25 +16,23 @@ function PrivateRoute(props) {
         // Check if a user is logged in
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in.
+                // user is signed in. set user.
                 setUser(user);
-                // get token
+                // get user's token
                 user.getIdToken(/* forceRefresh */ true)
                 .then(idToken => {
                 setToken(idToken);
-                // alert("from PrivateRoute: token value is " + token)
-                // alert("from PrivateRoute: idToken value is " + idToken)
-                // Now you can use the token as needed.
+                alert("fromPrivateRoute, useEffect: token is " + idToken)
                 })
                 .catch(error => {
-                // Handle any errors that occur while getting the token.
+                // error in getting token
                 console.error('Error getting ID token:', error);
                 });
             } else {
-                // No user is signed in.
+                // user is not signed in
                 setUser(null);
             }
-            // Mark initial check as done
+            // set initial check done
             setInitialCheckDone(true);
         });
         // Cleanup the subscription when the component unmounts
