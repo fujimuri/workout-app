@@ -178,6 +178,17 @@ exports.workout_update_post = [
         .escape(),
 
     asyncHandler(async (req, res) => {
+        const idToken = req.headers.authorization;
+        if (!idToken || !idToken.startsWith('Bearer ')) {
+        console.error('Invalid authorization header');
+        return res.status(401).json({
+            success: false,
+            error: 'Unauthorized',
+        });
+        }
+        // Extract the token part after "Bearer"
+        const token = idToken.split(' ')[1];
+        const decodedUID = await verifyTokenAndGetUID(token);
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -190,9 +201,25 @@ exports.workout_update_post = [
                 });
             }
             // if we are here, the errors are empty and it's ok to save :)
-            const exerciseList = req.body.exerciseList;
             const workoutID = req.params.id;
-        
+            const workout = await WorkoutLog.findById(workoutID);
+
+            if (!workout) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Workout not found',
+                });
+            }
+
+            // Compare the decoded UID with the user ID of the workout
+            if (decodedUID !== workout.user_id) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Unauthorized access',
+                });
+            }
+            
+            const exerciseList = req.body.exerciseList;        
             const updatedExerciseIDs = [];
         
             for (const exercise of exerciseList) {

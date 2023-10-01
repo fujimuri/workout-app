@@ -6,7 +6,7 @@ import Archive from './components/Archive';
 
 function App(props) {
   // checking token value
-  alert("from App: token value is " + props.token)
+  // alert("from App: token value is " + props.token)
 
   const userID = props.userID;
 
@@ -32,7 +32,6 @@ function App(props) {
             body: JSON.stringify(workoutLog),
             headers: {
                 'Content-Type': 'application/json',
-                'User-ID' : userID,
                 'Authorization': `Bearer ${props.token}`,
             }
         });
@@ -81,7 +80,7 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
           body: JSON.stringify(workoutLog),
           headers: {
               'Content-Type': 'application/json',
-              'User-ID' : userID,
+              'Authorization': `Bearer ${props.token}`,
           }
       });
       
@@ -125,7 +124,6 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-ID' : userID,
         'Authorization': `Bearer ${props.token}`,
       }
     }).then(
@@ -163,6 +161,7 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
                 workoutDeletedCount={workoutDeletedCount}
                 userID={userID}
                 token={props.token}
+                refreshToken={props.refreshToken}
               />
             );
             case "Personal Bests":

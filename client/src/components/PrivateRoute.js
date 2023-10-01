@@ -22,7 +22,7 @@ function PrivateRoute(props) {
                 user.getIdToken(/* forceRefresh */ true)
                 .then(idToken => {
                 setToken(idToken);
-                alert("fromPrivateRoute, useEffect: token is " + idToken)
+                // alert("fromPrivateRoute, useEffect: token is " + idToken)
                 })
                 .catch(error => {
                 // error in getting token
@@ -50,7 +50,8 @@ function PrivateRoute(props) {
         isPrefilled={props.isPrefilled}
         pageName={props.pageName}
         userID={user.uid}
-        token={token}/>
+        token={token}
+        />
       ) : (
         <Navigate to="/login" replace />
       );
