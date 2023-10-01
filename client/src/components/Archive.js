@@ -9,7 +9,6 @@ function Archive(props) {
 
     const [exerciseName, setExerciseName] = useState('');
     const [dateRange, setDateRange] = useState('');
-    // const [showWorkoutsWithPRs, setShowWorkoutsWithPRs] = useState(false);
 
     // get list of workouts from backend with optional filter
     const [backendData, setBackendData] = useState([]);
@@ -29,7 +28,6 @@ function Archive(props) {
         fetch(`${backendUrl}/workouts?exercise_name=${exerciseName}&date_range=${dateRange}`, {
             method: 'GET',
             headers: {
-                'User-ID': user_id,
                 'Authorization': `Bearer ${props.token}`,
             },
         })
