@@ -22,7 +22,7 @@ function PrivateRoute(props) {
                 user.getIdToken(/* forceRefresh */ true)
                 .then(idToken => {
                 setToken(idToken);
-                // alert("fromPrivateRoute, useEffect: token is " + idToken)
+                // alert("user=true: fromPrivateRoute, useEffect: token is " + idToken)
                 })
                 .catch(error => {
                 // error in getting token

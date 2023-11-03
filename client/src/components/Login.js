@@ -95,7 +95,7 @@ function Login() {
     };
 
     if (!initialCheckDone) {
-        return null; // You can use a loading indicator here if needed
+        return null;
     }
 
     return (
@@ -123,37 +123,35 @@ function Login() {
             <div>
               <p className="login-text">
                 Log in for an existing user or sign up for a new user:
-                </p>
+              </p>
               <form className="login-form" onSubmit={handleLogin}>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  required
-                />
-                <label>Email</label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  required
-                />
-                <label>Password</label>
-                <div>
-                    <button
-                    className="btn login-btn"
-                    type="submit"
-                    onClick={handleLogin}>
-                        Log In
-                    </button>
-                    <button
-                    className="btn signup-btn"
-                    type="submit"
-                    onClick={handleRegister}>
-                        Sign Up
-                    </button>
+                <div className="input-container">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    required
+                  />
+                </div>
+                <div className="input-container">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+                <div className="button-container">
+                  <button className="btn login-btn" type="submit" onClick={handleLogin}>
+                    Log In
+                  </button>
+                  <button className="btn signup-btn" type="submit" onClick={handleRegister}>
+                    Sign Up
+                  </button>
                 </div>
                 {error && <p>{error}</p>}
               </form>
