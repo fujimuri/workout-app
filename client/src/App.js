@@ -179,7 +179,9 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
             );
             default:
               return (
-                <Home />
+                <Home
+                userID={userID}
+                />
           );
         }
       })()}
