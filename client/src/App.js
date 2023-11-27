@@ -3,6 +3,7 @@ import WorkoutLog from './components/WorkoutLog'
 import { useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Archive from './components/Archive';
+import Home from './components/Home';
 
 function App(props) {
   // checking token value
@@ -178,9 +179,7 @@ const handleWorkoutUpdate = async (workoutID, workoutLog) => {
             );
             default:
               return (
-                <div>
-                  Welcome to the website 🌸
-                </div>
+                <Home />
           );
         }
       })()}

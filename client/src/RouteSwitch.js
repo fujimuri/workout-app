@@ -12,9 +12,9 @@ const RouteSwitch = () => {
                 path="/"
                 element={
                         <PrivateRoute
-                        isEditing={true}
+                        isEditing={false}
                         isPrefilled={false}
-                        pageName="New Workout"
+                        pageName="Home"
                         />
                 }/>
                 <Route

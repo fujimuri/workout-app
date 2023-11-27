@@ -12,7 +12,7 @@ function Header(props) {
     const namesAndLinks = [
         {
             urlName: 'New Workout',
-            url: '/' // might be /new later
+            url: '/new' // might be /new later
         },
         {
             urlName: 'Previous Workouts',
