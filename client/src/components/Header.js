@@ -31,7 +31,9 @@ function Header(props) {
     return (
         <div className="header">
             <h1 className="header-title">
-                Workout Tracking App
+                <a className="header-link" href="/">
+                    Workout Tracking App
+                </a>
             </h1>
             <ul className="header-links">
                 {namesAndLinks.map((obj) => (

@@ -6,6 +6,11 @@
     padding: 10px;
 }
 
+.header-link {
+  text-decoration: none;
+  color: rgb(201, 105, 121);
+}
+
 .header-content {
     display: flex;
     justify-content: space-between;
