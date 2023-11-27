@@ -12,7 +12,7 @@ function Home(props) {
                     Here you can easily track your strength workouts.
                 </p>
                 <p>
-                    Please sign up to be able to log your own workouts!
+                    Please <a href="/login">sign up</a> to be able to log your own workouts!
                 </p>
                 <p>
                     Happy lifting! 🍓
